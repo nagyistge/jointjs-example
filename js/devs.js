@@ -5,6 +5,9 @@ var paper = new joint.dia.Paper({
     width: 1000,
     height: 400,
     gridSize: 1,
+    defaultLink: new joint.dia.Link({
+        attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
+    }),
     model: graph,
     snapLinks: true,
     embeddingMode: true,
@@ -13,16 +16,9 @@ var paper = new joint.dia.Paper({
     },
     validateConnection: function(sourceView, sourceMagnet, targetView, targetMagnet) {
         return sourceMagnet != targetMagnet;
-    }
+    },
+    markAvailable: true
 });
-
-var connect = function(source, sourcePort, target, targetPort) {
-    var link = new joint.shapes.devs.Link({
-        source: { id: source.id, selector: source.getPortSelector(sourcePort) },
-        target: { id: target.id, selector: target.getPortSelector(targetPort) }
-    });
-    link.addTo(graph).reparent();
-};
 
 var c1 = new joint.shapes.devs.Coupled({
     position: { x: 260, y: 50 },
@@ -84,6 +80,23 @@ graph.addCells([c1, a1, in1, in2, out1, out2]);
 
 c1.embed(a1);
 
+var connect = function(source, sourcePort, target, targetPort) {
+
+    console.log('port selector >', source.getPortSelector(sourcePort));
+
+    var link = new joint.shapes.devs.Link({
+        source: {
+            id: source.id,
+            selector: source.getPortSelector(sourcePort)
+        },
+        target: {
+            id: target.id,
+            selector: target.getPortSelector(targetPort)
+        }
+    });
+    link.addTo(graph).reparent();
+};
+
 connect(in1,'out',c1,'in1');
 connect(in2,'out',c1,'in2');
 connect(c1,'in1',a1,'a');
@@ -137,3 +150,11 @@ paper.off('cell:highlight cell:unhighlight').on({
     }
 });
 
+
+graph.on('all', function(eventName, cell) {
+    console.log(arguments);
+});
+
+paper.on('blank:pointerdown', function(evt, x, y) {
+    //alert('pointerdown on a blank area in the paper.')
+})
