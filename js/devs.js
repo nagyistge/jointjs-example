@@ -1,5 +1,4 @@
 var graph = new joint.dia.Graph;
-
 var paper = new joint.dia.Paper({
     el: $('#paper'),
     width: 1000,
@@ -19,70 +18,70 @@ var paper = new joint.dia.Paper({
     },
     markAvailable: true
 });
+//
+//var c1 = new joint.shapes.devs.Coupled({
+//    position: { x: 260, y: 50 },
+//    size: { width: 300, height: 300 },
+//    inPorts: ['in1','in2'],
+//    outPorts: ['out1','out2'],
+//    attrs: {
+//        text: { text: 'Logic' }
+//    }
+//});
+//
+//var a1 = new joint.shapes.devs.Atomic({
+//    position: { x: 360, y: 160 },
+//    size: { width: 150, height: 100 },
+//    inPorts: ['a','b'],
+//    outPorts: ['x','y'],
+//    attrs: {
+//        text: { text: 'AND/NAND' }
+//    }
+//});
+//
+//var in1 = new joint.shapes.devs.Atomic({
+//    position: { x: 10, y: 70 },
+//    size: { width: 150, height: 100 },
+//    outPorts: ['out'],
+//    attrs: {
+//        text: { text: 'Joystic' }
+//    }
+//});
+//
+//var in2 = new joint.shapes.devs.Atomic({
+//    position: { x: 10, y: 200 },
+//    size: { width: 150, height: 100 },
+//    outPorts: ['out'],
+//    attrs: {
+//        text: { text: 'Stop Button' }
+//    }
+//});
+//
+//var out1 = new joint.shapes.devs.Atomic({
+//    position: { x: 650, y: 50 },
+//    size: { width: 140, height: 200 },
+//    inPorts: ['a','b'],
+//    attrs: {
+//        text: { text: 'Actuator' }
+//    }
+//});
+//
+//var out2 = new joint.shapes.devs.Atomic({
+//    position: { x: 650, y: 300 },
+//    size: { width: 140, height: 50 },
+//    inPorts: ['in'],
+//    attrs: {
+//        text: { text: 'Led' }
+//    }
+//});
+//
+//graph.addCells([c1, a1, in1, in2, out1, out2]);
 
-var c1 = new joint.shapes.devs.Coupled({
-    position: { x: 260, y: 50 },
-    size: { width: 300, height: 300 },
-    inPorts: ['in1','in2'],
-    outPorts: ['out1','out2'],
-    attrs: {
-        text: { text: 'Logic' }
-    }
-});
-
-var a1 = new joint.shapes.devs.Atomic({
-    position: { x: 360, y: 160 },
-    size: { width: 150, height: 100 },
-    inPorts: ['a','b'],
-    outPorts: ['x','y'],
-    attrs: {
-        text: { text: 'AND/NAND' }
-    }
-});
-
-var in1 = new joint.shapes.devs.Atomic({
-    position: { x: 10, y: 70 },
-    size: { width: 150, height: 100 },
-    outPorts: ['out'],
-    attrs: {
-        text: { text: 'Joystic' }
-    }
-});
-
-var in2 = new joint.shapes.devs.Atomic({
-    position: { x: 10, y: 200 },
-    size: { width: 150, height: 100 },
-    outPorts: ['out'],
-    attrs: {
-        text: { text: 'Stop Button' }
-    }
-});
-
-var out1 = new joint.shapes.devs.Atomic({
-    position: { x: 650, y: 50 },
-    size: { width: 140, height: 200 },
-    inPorts: ['a','b'],
-    attrs: {
-        text: { text: 'Actuator' }
-    }
-});
-
-var out2 = new joint.shapes.devs.Atomic({
-    position: { x: 650, y: 300 },
-    size: { width: 140, height: 50 },
-    inPorts: ['in'],
-    attrs: {
-        text: { text: 'Led' }
-    }
-});
-
-graph.addCells([c1, a1, in1, in2, out1, out2]);
-
-c1.embed(a1);
+//c1.embed(a1);
 
 var connect = function(source, sourcePort, target, targetPort) {
 
-    console.log('port selector >', source.getPortSelector(sourcePort));
+    //console.log('port selector >', source.getPortSelector(sourcePort));
 
     var link = new joint.shapes.devs.Link({
         source: {
@@ -150,11 +149,11 @@ paper.off('cell:highlight cell:unhighlight').on({
     }
 });
 
-
-graph.on('all', function(eventName, cell) {
-    console.log(arguments);
-});
-
-paper.on('blank:pointerdown', function(evt, x, y) {
-    //alert('pointerdown on a blank area in the paper.')
-})
+//
+//graph.on('all', function(eventName, cell) {
+//    console.log(arguments);
+//});
+//
+//paper.on('blank:pointerdown', function(evt, x, y) {
+//    //alert('pointerdown on a blank area in the paper.')
+//})
