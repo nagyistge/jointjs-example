@@ -20,7 +20,7 @@ if (typeof exports === 'object') {
     var _ = require('lodash');
 }
 
-//joint.shapes.devs = {};
+joint.shapes.devs = {};
 
 joint.shapes.devs.Model = joint.shapes.basic.Generic.extend(_.extend({}, joint.shapes.basic.PortsModelInterface, {
 
