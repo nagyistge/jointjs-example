@@ -27,85 +27,26 @@ var paperControls = new joint.dia.Paper({
     interactive: false
 });
 
-
-var c1 = new joint.shapes.devs.Coupled({
-    position: { x: 5, y: 5 },
-    size: { width: 300, height: 300 },
-    inPorts: ['in1','in2'],
-    outPorts: ['out1','out2'],
-    attrs: {
-        text: { text: 'Logic' }
-    }
-});
-
-var a1 = new joint.shapes.devs.Atomic({
-    position: { x: 325, y: 5 },
-    size: { width: 150, height: 100 },
-    inPorts: ['a','b'],
-    outPorts: ['x','y'],
-    attrs: {
-        text: { text: 'AND/NAND' }
-    }
-});
-
-var in1 = new joint.shapes.devs.Atomic({
-    position: { x: 325, y: 115 },
-    size: { width: 150, height: 100 },
-    outPorts: ['out'],
-    attrs: {
-        text: { text: 'Joystic' }
-    }
-});
-
-var in2 = new joint.shapes.devs.Atomic({
-    position: { x: 490, y: 5 },
-    size: { width: 150, height: 100 },
-    outPorts: ['out'],
-    attrs: {
-        text: { text: 'Stop Button' }
-    }
-});
-
-var out1 = new joint.shapes.devs.Atomic({
-    position: { x: 660, y: 5 },
-    size: { width: 140, height: 200 },
-    inPorts: ['a','b'],
-    attrs: {
-        text: { text: 'Actuator' }
-    }
-});
-
-var out2 = new joint.shapes.devs.Atomic({
-    position: { x: 490, y: 115 },
-    size: { width: 140, height: 50 },
-    inPorts: ['in'],
-    attrs: {
-        text: { text: 'Led' }
-    }
-});
-
-graphControls.addCells([c1, a1, in1, in2, out1, out2]);
-
-var newElement = null, body = null;
+var newElement = null,
+    bodyJq = null,
+    bufferControl = null,
+    paperMainJq = null;
 
 paperControls.on('cell:pointermove',function (cellView, evt, x, y) {
-    body.bind('mousemove', function(e){
+    bodyJq.bind('mousemove', function(e){
 
-        console.log('pointermove')
-        if (!createdElement) {
-            createdElement = $("div.box");
-            createdElement.css('visibility', 'visible');
+        if (!bufferControl) {
+            bufferControl = $("div.box");
+            bufferControl.css('visibility', 'visible');
         }
 
         var mouseX = e.pageX - cellView.model.getBBox().width / 2;
         var mouseY = e.pageY - cellView.model.getBBox().height / 2;
-        createdElement.offset({ top: mouseY, left: mouseX });
+        bufferControl.offset({ top: mouseY, left: mouseX });
     });
 });
 
-var paperMainJq = null, paperControlsJq = null;
-
-function allowToDragDrop(event){
+function allowDragDrop(event){
     if (!event) return false;
     paperMainJq = paperMainJq || $('#paper');
 
@@ -120,71 +61,63 @@ function allowToDragDrop(event){
     return false;
 }
 
-function clearDraggedData(){
-    if (body){
-        body.off('mousemove');
+function clearBufferData(){
+    if (bodyJq){
+        bodyJq.off('mousemove');
     }
 
     newElement.remove();
     newElement = null;
 
-    if (createdElement){
-        createdElement.remove();
-        createdElement = null;
+    if (bufferControl){
+        bufferControl.remove();
+        bufferControl = null;
     }
 
-    if (paper3) {
-        paper3.remove();
-        graph3.clear();
+    if (paperBuffer) {
+        paperBuffer.remove();
+        graphBuffer.clear();
     }
 }
 
 paperControls.on('cell:pointerup',function (cellView, evt, x, y) {
-    if (!allowToDragDrop(evt)) {
-        clearDraggedData();
+    if (!allowDragDrop(evt)) {
+        clearBufferData();
         return;
     }
 
-    // clear created element
-    if (newElement){
-        var draggedElement = newElement.clone();
-        var bbox = draggedElement.getBBox();
-        paperMainJq = paperMainJq || $('#paper');
-        paperControlsJq = paperControlsJq || $('#paperControls');
+    // clear buffer element
+    if (!newElement) return;
 
-        draggedElement.position(
-            evt.clientX - bbox.width / 2 - paperMainJq.offset().left,
-            evt.clientY - bbox.height / 2 - paperMainJq.offset().top + document.body.scrollTop);
-        graph.addCells([draggedElement]);
-        clearDraggedData();
-    }
+    var el = newElement.clone();
+    var bbox = el.getBBox();
+    paperMainJq = paperMainJq || $('#paper');
+
+    el.position(
+        evt.clientX - bbox.width / 2 - paperMainJq.offset().left,
+        evt.clientY - bbox.height / 2 - paperMainJq.offset().top + document.body.scrollTop);
+    graph.addCells([el]);
+    clearBufferData();
 });
 
-var graph3, paper3;
-var createdElement;
+var graphBuffer, paperBuffer;
 
-paperControls.on('cell:pointerdown',function (cellView, evt, x, y) {
+paperControls.on('cell:pointerdown', function (cellView, evt, x, y) {
     if (newElement) return;
-    body = body || $('body');
-    body.append('<div id="flyPaper" class="box" style="z-index: 100;display:block;opacity:.7; visibility: hidden"></div>');
+
+    bodyJq = bodyJq || $('body');
+    bodyJq.append('<div id="paperBuffer" class="box" style="z-index: 100;display:block;opacity:.7; visibility: hidden"></div>');
+
     newElement = cellView.model.clone();
     newElement.position(0, 0);
 
-    graph3 = graph3 || new joint.dia.Graph;
-    paper3 = new joint.dia.Paper({
-        el: $('#flyPaper'),
+    graphBuffer = new joint.dia.Graph;
+    paperBuffer = new joint.dia.Paper({
+        el: $('#paperBuffer'),
         width: paperControls.options.width,
         height: paperControls.options.height,
-        model: graph3,
+        model: graphBuffer,
         gridSize: 1
     });
-    graph3.addCells([newElement]);
+    graphBuffer.addCells([newElement]);
 });
-//
-//
-//var rect2 = new joint.shapes.basic.Rect({
-//    position: { x: 10, y: 50 },
-//    size: { width: 100, height: 30 },
-//    attrs: { rect: { fill: 'blue' }, text: { text: 'my box', fill: 'white' } }
-//});
-//graphControls.addCells([rect2]);

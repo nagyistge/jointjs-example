@@ -1,24 +1,24 @@
 <html>
 
 <head>
-  <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" type="text/css" href="vendors/css/joint.css">
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="vendors/css/joint.css">
 
-  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 
 
-  <title>JointJS - JavaScript diagramming library - Demos.</title>
+    <title>JointJS - JavaScript diagramming library - Demos.</title>
 </head>
 
 <style type="text/css">
-  #log {
-    font-size: 12px;
-    border: 1px solid black;
-    padding: 5px;
-    height: 300px;
-    overflow:scroll;
-  }
+    #log {
+        font-size: 12px;
+        border: 1px solid black;
+        padding: 5px;
+        height: 300px;
+        overflow:scroll;
+    }
 </style>
 
 <body>
@@ -27,27 +27,21 @@
 <link rel="stylesheet" type="text/css" href="css/custom.css">
 
 <div id="org" class="content-container">
-  <h1>LUG HTML5 diagram demo</h1>
-  <div id="paperControls" class="paper-controls"></div>
-  <div id="paper" class="paper"></div>
+    <h1>LUG HTML5 diagram demo</h1>
+    <div id="paperControls" class="paper-controls"></div>
+    <div id="paper" class="paper"></div>
 
-  <button name="log_btn" onclick=" logGraph();">Export to JSON</button>
-  <div id="log" class="log"></div>
+    <button name="log_btn" onclick=" logGraph();">Export to JSON</button>
+    <div id="log" class="log"></div>
 </div>
 
 
-
-
-
-
-
-
 <script>
-  function logGraph()
-  {
-    var json_str = JSON.stringify(graph, null, 4);
-    document.getElementById('log').innerHTML = '<pre>' + json_str + '</pre>';
-  }
+    function logGraph()
+    {
+        var json_str = JSON.stringify(graph, null, 4);
+        document.getElementById('log').innerHTML = '<pre>' + json_str + '</pre>';
+    }
 </script>
 
 <script src="vendors/js/jquery.min.js"></script>
@@ -58,5 +52,6 @@
 <script src="vendors/js/joint.shapes.devs.js"></script>
 <script src="js/devs.js"></script>
 <script src="js/drag.js"></script>
+<script src="js/init.js"></script>
 
 </body></html>
