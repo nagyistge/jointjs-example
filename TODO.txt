@@ -1,0 +1,2 @@
+- jquery custom css exists image file path that does not exists in real
+-
