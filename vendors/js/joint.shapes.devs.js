@@ -158,8 +158,6 @@ joint.shapes.devs.ModelView = joint.dia.ElementView.extend(joint.shapes.basic.Po
 joint.shapes.devs.AtomicView = joint.shapes.devs.ModelView;
 joint.shapes.devs.CoupledView = joint.shapes.devs.ModelView;
 
-
 if (typeof exports === 'object') {
-
     module.exports = joint.shapes.devs;
 }
