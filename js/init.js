@@ -87,10 +87,10 @@ define(['joint', 'joint.shapes.devs'], function (joint, Shapes) {
         connect(c1, 'out2', out1, 'b');
         connect(c1, 'out2', out2, 'in');
     };
-    function initControls(graph) {
+    function initControls(graph, paper, HtmlShapes) {
         var c1 = new Shapes.Coupled({
-            position: {x: 5, y: 5},
-            size: {width: 300, height: 300},
+            position: {x: 15, y: 5},
+            size: {width: 100, height: 50},
             inPorts: ['in1', 'in2'],
             outPorts: ['out1', 'out2'],
             attrs: {
@@ -98,53 +98,71 @@ define(['joint', 'joint.shapes.devs'], function (joint, Shapes) {
             }
         });
 
-        var a1 = new Shapes.Atomic({
-            position: {x: 325, y: 5},
-            size: {width: 150, height: 100},
-            inPorts: ['a', 'b'],
-            outPorts: ['x', 'y'],
-            attrs: {
-                text: {text: 'AND/NAND'}
-            }
+        var h1 = new HtmlShapes.Element({
+            position: {
+                x: 180,
+                y: 5
+            },
+            size: {
+                width: 170,
+                height: 100
+            },
+            label: 'I am HTML',
+            select: 'one'
         });
 
-        var in1 = new Shapes.Atomic({
-            position: {x: 325, y: 115},
-            size: {width: 150, height: 100},
-            outPorts: ['out'],
-            attrs: {
-                text: {text: 'Joystic'}
-            }
-        });
 
-        var in2 = new Shapes.Atomic({
-            position: {x: 490, y: 5},
-            size: {width: 150, height: 100},
-            outPorts: ['out'],
-            attrs: {
-                text: {text: 'Stop Button'}
-            }
-        });
+        //
+        //var a1 = new Shapes.Atomic({
+        //    position: {x: 325, y: 5},
+        //    size: {width: 150, height: 100},
+        //    inPorts: ['a', 'b'],
+        //    outPorts: ['x', 'y'],
+        //    attrs: {
+        //        text: {text: 'AND/NAND'}
+        //    }
+        //});
+        //
+        //var in1 = new Shapes.Atomic({
+        //    position: {x: 325, y: 115},
+        //    size: {width: 150, height: 100},
+        //    outPorts: ['out'],
+        //    attrs: {
+        //        text: {text: 'Joystic'}
+        //    }
+        //});
+        //
+        //var in2 = new Shapes.Atomic({
+        //    position: {x: 490, y: 5},
+        //    size: {width: 150, height: 100},
+        //    outPorts: ['out'],
+        //    attrs: {
+        //        text: {text: 'Stop Button'}
+        //    }
+        //});
+        //
+        //var out1 = new Shapes.Atomic({
+        //    position: {x: 660, y: 5},
+        //    size: {width: 140, height: 200},
+        //    inPorts: ['a', 'b'],
+        //    attrs: {
+        //        text: {text: 'Actuator'}
+        //    }
+        //});
+        //
+        //var out2 = new Shapes.Atomic({
+        //    position: {x: 490, y: 115},
+        //    size: {width: 140, height: 50},
+        //    inPorts: ['in'],
+        //    attrs: {
+        //        text: {text: 'Led'}
+        //    }
+        //});
 
-        var out1 = new Shapes.Atomic({
-            position: {x: 660, y: 5},
-            size: {width: 140, height: 200},
-            inPorts: ['a', 'b'],
-            attrs: {
-                text: {text: 'Actuator'}
-            }
-        });
+        graph.addCells([c1, h1]);
+        //paper.findViewByModel(h1).fixedPosition(paper);
 
-        var out2 = new Shapes.Atomic({
-            position: {x: 490, y: 115},
-            size: {width: 140, height: 50},
-            inPorts: ['in'],
-            attrs: {
-                text: {text: 'Led'}
-            }
-        });
-
-        graph.addCells([c1, a1, in1, in2, out1, out2]);
+        //graph.addCells([c1, a1, in1, in2, out1, out2]);
     }
 
     return {

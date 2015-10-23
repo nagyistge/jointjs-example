@@ -127,7 +127,7 @@ define(['joint', 'lodash'], function (joint, _) {
         defaults: joint.util.deepSupplement({
 
             type: 'devs.Coupled',
-            size: { width: 200, height: 300 },
+            //size: { width: 200, height: 300 },
             attrs: {
                 '.body': { fill: 'seaGreen' },
                 '.label': { text: 'Coupled' },

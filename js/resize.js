@@ -1,96 +1,45 @@
 define(['jquery',
         'lodash',
-        'joint',
         'jquery_ui',
         'style!layout_vendor/jquery-ui-1.10.4.custom',
         'style!layout/html'],
-    function ($, _, joint, $ui) {
-        return function () {
-            var graph = new joint.dia.Graph;
+    function ($, _, $ui) {
 
-            joint.shapes.html = {};
-            joint.shapes.html.BoxResize = joint.shapes.basic.Rect.extend({
-                defaults: joint.util.deepSupplement({
-                    type: 'html.BoxResize',
-                    attrs: {
-                        rect: {
-                            stroke: 'none',
-                            'fill-opacity': 0
-                        }
-                    }
-                }, joint.shapes.basic.Rect.prototype.defaults)
-            });
+        function initPaperEvents(joint, graph, paper) {
 
-            joint.shapes.html.BoxResizeView = joint.dia.ElementView.extend({
+            var resizing_box_template = [
+                '<div id="resizable" class="ui-widget-content selected-control">',
+                '<button class="delete">x</button>',
+                '<span>Editable</span>',
+                '</div>'
+            ].join('');
 
-                template: [
-                    '<div id="resizable" class="ui-widget-content">',
-                    '<h3>Resizable</h3>',
-                    '</div>'
-                ].join(''),
+            function setResizible(cellView, paper) {
+                // 0 remember last clicked for sizing cell
+                lastCellView = cellView;
 
-                initialize: function () {
-                    _.bindAll(this, 'updateBox');
-                    joint.dia.ElementView.prototype.initialize.apply(this, arguments);
+                // 1 set dotted border for svg control
+                joint.V(cellView.$el.find('.body')[0]).addClass('resize-box');
 
-                    this.$box = $(_.template(this.template)());
+                // 2 add html layout for resizing
+                cellView.$htmlBox = $(_.template(resizing_box_template)());
+                paper.$el.prepend(cellView.$htmlBox);
 
-                    this.model.on('change', this.updateBox, this);
-                    this.model.on('remove', this.removeBox, this);
-                    this.updateBox();
-                },
-                render: function () {
-                    joint.dia.ElementView.prototype.render.apply(this, arguments);
-                    this.paper.$el.prepend(this.$box);
-                    this.updateBox();
-                    return this;
-                },
-                updateBox: function () {
-                    var bbox = this.model.getBBox();
-                    this.$box.css({
+                function updateResizingBox() {
+                    var bbox = cellView.model.getBBox();
+                    cellView.$htmlBox.css({
                         width: bbox.width,
                         height: bbox.height,
                         left: bbox.x,
                         top: bbox.y,
-                        transform: 'rotate(' + (this.model.get('angle') || 0) + 'deg)'
+                        transform: 'rotate(' + (cellView.model.get('angle') || 0) + 'deg)'
                     });
                 }
-            });
+                updateResizingBox();
 
-            var paper = new joint.dia.Paper({
-                el: $('#paper'),
-                width: 650,
-                height: 400,
-                gridSize: 1,
-                model: graph
-            });
-
-            paper.on('cell:pointerdown', function (cellView, evt, x, y) {
-                resizingAllow = true;
-            });
-
-            paper.on('cell:pointermove', function (cellView, evt, x, y) {
-                resizingAllow = false;
-            });
-
-            paper.on('cell:pointerup', function (cellView, evt, x, y) {
-                showSizing(cellView);
-            });
-
-            var container,
-                resizingAllow = false,  // allow to show resize border, when click (not moved) on element
-                resizingMoved = false,  // started resizing
-                resizingStopped = false,// stopped resizing
-                lastCellView = null;    // current resize element
-
-            function showSizing(cellView) {
-                container = container || $("#resizable");
-                if (!resizingAllow) return;
-                if (container.hasClass('box')) return;
-
-                lastCellView = cellView;
-                container.addClass('box');
-                container.resizable({
+                // 3 activate resizing
+                resizingBox = $('#resizable');
+                resizingBox.resizable({
                     start: function (e, ui) {
                         resizingMoved = false;
                         resizingStopped = false;
@@ -102,54 +51,98 @@ define(['jquery',
                     stop: function (e, ui) {
                         resizingMoved = false;
                         resizingStopped = true;
-                        if (lastCellView != null) lastCellView.model.resize(container.width(), container.height());
+                        if (lastCellView != null) {
+                            var width = resizingBox.width();
+                            var height = resizingBox.height();
+                            lastCellView.model.resize(width, height);
+                        }
                     }
+                });
+
+                // 4 modify position box by model
+                cellView.model.on('change', updateResizingBox, cellView);
+                cellView.model.on('remove', setUnResizible);
+
+                // 4 delete button
+                cellView.$htmlBox.find('.delete').on('click', function () {
+                    cellView.model.remove();
+                    setUnResizible();
                 });
 
                 $('.ui-resizable-handle').css('pointer-events', 'auto');
             }
 
-            function hideSizing() {
-                container = container || $("#resizable");
+            function setUnResizible(){
+                if (!resizingBox) return;
+                //joint.V(lastCellView.$el.find('.body')[0]).removeClass('resize-box');
+                resizingBox.resizable('destroy');
+                resizingBox.remove();
+                resizingBox = null;
+                lastCellView = null;
 
-                function clearResizing() {
-                    container.removeClass('box');
-                    container.resizable('destroy');
-                    $('.ui-resizable-handle').css('pointer-events', 'none');
-                    lastCellView = null;
+                $('.ui-resizable-handle').css('pointer-events', 'none');
+            }
+
+            function isResizible(cellView){
+                return cellView === lastCellView;
+                //return joint.V(cellView.$el.find('.body')[0]).hasClass('resize-box');
+            }
+
+            paper = paper || new joint.dia.Paper({
+                    el: $('#paper'),
+                    width: 650,
+                    height: 400,
+                    gridSize: 1,
+                    model: graph
+                });
+
+            var resizingBox = null,
+                resizingAllow = false,  // allow to show resize border, when click (not moved) on element
+                resizingMoved = false,  // started resizing
+                resizingStopped = false,// stopped resizing
+                lastCellView = null;    // current resize element
+
+            function showSizing(cellView) {
+                if (!resizingAllow) return;
+                if (isResizible(cellView)) return;
+                setResizible(cellView, paper);
+            }
+
+            function hideSizing(event) {
+                if (!lastCellView) return;
+
+                var offset = resizingBox.offset();
+                var x = event.pageX, y = event.pageY;
+
+                if (x >= offset.left && x <= offset.left + resizingBox.width()) {
+                    if (y >= offset.top && y <= offset.top + resizingBox.height())
+                        return;
                 }
 
                 // 1. Stop resizing
-                if (container.hasClass('box') && resizingStopped) {
-                    clearResizing();
+                if (isResizible(lastCellView) && resizingStopped) {
+                    setUnResizible(lastCellView);
                     resizingStopped = false;
                     return;
                 }
 
                 // 2. Click outside resizing and not move resizing
-                if (container.hasClass('box') && !resizingMoved) {
-                    clearResizing();
+                if (isResizible(lastCellView) && !resizingMoved) {
+                    setUnResizible(lastCellView);
                     resizingMoved = false;
                     return;
                 }
             }
 
-            paper.on('blank:pointerup', function (evt, x, y) {
-                hideSizing();
+            paper.on('cell:pointerdown', function (cellView, evt, x, y) { resizingAllow = true; });
+            paper.on('cell:pointermove', function (cellView, evt, x, y) { resizingAllow = false; });
+            paper.on('cell:pointerup', function (cellView, evt, x, y) {
+                showSizing(cellView);
             });
-
-            var el2 = new joint.shapes.html.BoxResize({
-                    position: {
-                        x: 70,
-                        y: 160
-                    },
-                    size: {
-                        width: 170,
-                        height: 100
-                    }
-                }
-            );
-
-            graph.addCells([el2]);
+            paper.on('blank:pointerup', function (evt, x, y) { hideSizing(evt); });
         }
+
+        return {
+            init: initPaperEvents
+        };
     });

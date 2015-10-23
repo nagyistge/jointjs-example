@@ -11,6 +11,12 @@
     stroke-width: 4px;
 }
 
+/*.devs .resize-box {*/
+    /*stroke: #000000;*/
+    /*stroke-width: 3;*/
+    /*stroke-dasharray: 10 5;*/
+/*}*/
+
 .devs .label {
     fill: #00d2c6;
     font-size: 16px;

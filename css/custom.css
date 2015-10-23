@@ -5,6 +5,7 @@
 
 .paper-controls {
     background: grey;
+    position: relative;
     /*height: 300;*/
     /*width: 800;*/
 }

@@ -1,8 +1,58 @@
+/*resizing*/
+
+.ui-widget-content {
+    position: absolute;
+    border-width: 5px;
+    border-color: #444; /* changes to "pink" for the rest */
+    border-style: dotted; /* dashed, double, groove, ridge, inset, outset */
+    /* Make sure events are propagated to the JointJS element so, e.g. dragging works.*/
+    pointer-events: none;
+    -webkit-user-select: none;
+    padding: 1px;
+    z-index: 2;
+}
+
+.ui-widget-content.selected-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ui-widget-content button {
+    /* Enable interacting with inputs only. */
+    pointer-events: auto;
+}
+
+.ui-widget-content button.delete {
+    color: white;
+    border: none;
+    background-color: #C0392B;
+    border-radius: 20px;
+    width: 17px;
+    height: 17px;
+    line-height: 15px;
+    text-align: middle;
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    padding: 0;
+    margin: 0;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.ui-widget-content button.delete:hover {
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+}
+
+/*html*/
+
 #paper {
     position: relative;
     border: 1px solid gray;
     display: inline-block;
-    background: transparent;
+    /*background: transparent;*/
     overflow: hidden;
 }
 #paper svg {
@@ -12,20 +62,9 @@
     z-index: 2;
 }
 
-.ui-widget-content {
-    position: absolute;
-    background: #3498DB;
-    /* Make sure events are propagated to the JointJS element so, e.g. dragging works.*/
-    pointer-events: none;
-    -webkit-user-select: none;
-    padding: 1px;
-    z-index: 2;
-}
-
-.box {
-    border-width: 5px;
-    border-color: #444; /* changes to "pink" for the rest */
-    border-style: dotted; /* dashed, double, groove, ridge, inset, outset */
+.element .devs .Coupled .resize-box {
+    background: black;
+    width: 1000px;
 }
 
 .html-element {
@@ -58,8 +97,8 @@
     border: none;
     background-color: #C0392B;
     border-radius: 20px;
-    width: 15px;
-    height: 15px;
+    width: 17px;
+    height: 17px;
     line-height: 15px;
     text-align: middle;
     position: absolute;

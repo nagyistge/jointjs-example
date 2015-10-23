@@ -351,15 +351,15 @@
             _.bindAll(this, 'updateBox');
             joint.dia.ElementView.prototype.initialize.apply(this, arguments);
 
-            this.$box = $(_.template(this.template)());
+            this.$htmlBox = $(_.template(this.template)());
             // Prevent paper from handling pointerdown.
-            this.$box.find('input').on('mousedown click', function(evt) { evt.stopPropagation(); });
+            this.$htmlBox.find('input').on('mousedown click', function(evt) { evt.stopPropagation(); });
 
             this.$ruler = $('<span>', { style: 'visibility: hidden; white-space: pre' });
             $(document.body).append(this.$ruler);
 
             // This is an example of reacting on the input change and storing the input data in the cell model.
-            this.$box.find('textarea').on('input', _.bind(function(evt) {
+            this.$htmlBox.find('textarea').on('input', _.bind(function(evt) {
 
                 var val = $(evt.target).val();
                 this.model.set('textarea', val);
@@ -374,52 +374,52 @@
                 width = 150;
                 if((area > 9000)){
                     this.model.set('size', { width: width + 50 , height: height + 80 });
-                    this.$box.find('textarea').css({ width: width  , height: height + 30});
-                    this.$box.find('.color-edit').css({width: width + 50 , height: height + 80});
-                    this.$box.find('.in').css({ top: height + 75});
+                    this.$htmlBox.find('textarea').css({ width: width  , height: height + 30});
+                    this.$htmlBox.find('.color-edit').css({width: width + 50 , height: height + 80});
+                    this.$htmlBox.find('.in').css({ top: height + 75});
 
                 }
 
 
             }, this));
 
-            this.$box.find('.green').on('click', _.bind(function() {
+            this.$htmlBox.find('.green').on('click', _.bind(function() {
 
 
-                this.$box.find('.color-edit').css({background : '#CCE680'});
-
-
-            }, this));
-            this.$box.find('.red').on('click', _.bind(function() {
-
-                this.$box.find('.color-edit').css({ background: '#F0B2B2'});
+                this.$htmlBox.find('.color-edit').css({background : '#CCE680'});
 
 
             }, this));
-            this.$box.find('.yellow').on('click', _.bind(function() {
+            this.$htmlBox.find('.red').on('click', _.bind(function() {
 
-                this.$box.find('.color-edit').css({ background: '#FFFF99'});
+                this.$htmlBox.find('.color-edit').css({ background: '#F0B2B2'});
 
 
             }, this));
+            this.$htmlBox.find('.yellow').on('click', _.bind(function() {
 
-            this.$box.find('textarea').on('click', _.bind(function() {
-
-                this.$box.find('.delete').css({ opacity:1 });
-                this.$box.find('textarea').css({ opacity:1 });
+                this.$htmlBox.find('.color-edit').css({ background: '#FFFF99'});
 
 
             }, this));
 
-            this.$box.find('textarea').on('blur', _.bind(function() {
+            this.$htmlBox.find('textarea').on('click', _.bind(function() {
 
-                this.$box.find('.delete').css({ opacity:0 });
-                this.$box.find('textarea').css({ opacity:0 });
+                this.$htmlBox.find('.delete').css({ opacity:1 });
+                this.$htmlBox.find('textarea').css({ opacity:1 });
 
 
             }, this));
 
-            this.$box.find('.delete').on('click', _.bind(this.model.remove, this.model));
+            this.$htmlBox.find('textarea').on('blur', _.bind(function() {
+
+                this.$htmlBox.find('.delete').css({ opacity:0 });
+                this.$htmlBox.find('textarea').css({ opacity:0 });
+
+
+            }, this));
+
+            this.$htmlBox.find('.delete').on('click', _.bind(this.model.remove, this.model));
             // Update the box position whenever the underlying model changes.
             this.model.on('change', this.updateBox, this);
             // Remove the box when the model gets removed from the graph.
@@ -434,7 +434,7 @@
 
         render: function() {
             joint.dia.ElementView.prototype.render.apply(this, arguments);
-            this.paper.$el.prepend(this.$box);
+            this.paper.$el.prepend(this.$htmlBox);
             // this.paper.$el.mousemove(this.onMouseMove.bind(this)), this.paper.$el.mouseup(this.onMouseUp.bind(this));
             this.updateBox();
             return this;
@@ -469,14 +469,14 @@
             var bbox = this.model.getBBox();
             // Example of updating the HTML with a data stored in the cell model.
 
-            this.$box.find('span').text(this.model.get('textarea'));
-            this.$box.find('textarea').text('Start writing');
+            this.$htmlBox.find('span').text(this.model.get('textarea'));
+            this.$htmlBox.find('textarea').text('Start writing');
 
-            this.$box.css({ width: bbox.width, height: bbox.height, left: bbox.x, top: bbox.y, transform: 'rotate(' + (this.model.get('angle') || 0) + 'deg)' });
+            this.$htmlBox.css({ width: bbox.width, height: bbox.height, left: bbox.x, top: bbox.y, transform: 'rotate(' + (this.model.get('angle') || 0) + 'deg)' });
         },
         removeBox: function(evt) {
             this.$ruler.remove();
-            this.$box.remove();
+            this.$htmlBox.remove();
         }
     });
 
