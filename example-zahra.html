@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="http://www.jointjs.com/downloads/joint.min.css">
+
+
+    <script src="vendors/js/jquery.min.js"></script>
+    <script src="vendors/js/lodash.min.js"></script>
+    <script src="vendors/js/backbone.min.js"></script>
+    <script src="vendors/js/joint_093.js"></script>
+    <!--<script type="text/javascript" src="http://www.jointjs.com/downloads/joint.min.js" ></script>-->
+    <!--<script src="http://www.jointjs.com/downloads/joint.shapes.devs.min.js" ></script>-->
+    <title>Test</title>
+
+
+    <style type="text/css">
+        #myholder {
+            position: relative;
+            border: 1px solid gray;
+            display: inline-block;
+            background: transparent;
+            overflow: hidden;
+        }
+        #myholder svg {
+            background: transparent;
+        }
+        #myholder svg .link {
+            z-index: 2;
+        }
+
+        .inPorts {
+            top:50;
+            left:0;
+        }
+
+        .outPorts {
+            height: auto;
+        }
+
+        .link-tools .tool-remove { display: none }
+        .link-tools .tool-options { display: none }
+
+        .myrect {
+            height: auto;
+        }
+        .html-element {
+            position: absolute;
+            top:-100;
+            left:-100;
+            background: 	#B8FFDB;
+            /* Make sure events are propagated to the JointJS element so, e.g. dragging works.*/
+            pointer-events: none;
+            -webkit-user-select: none;
+            border-radius: 10px;
+            border: none;
+            /*border: 4px solid #1A1A1A ;*/
+            /*box-shadow: inset 0 0 5px black, 2px 2px 1px gray;*/
+            padding: 10px;
+            margin: 10px;
+            box-sizing: border-box;
+            z-index: 3;
+
+        }
+
+        .color-edit {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            border: none;
+            /*border: 4px solid #1A1A1A ;*/
+            border-radius: 10px;
+            width: 200px;
+            height: 100px;
+            background: 	#B8FFDB;
+
+        }
+
+        .html-element textarea,
+        .html-element button {
+            /* Enable interacting with inputs only. */
+            pointer-events: auto;
+        }
+        .html-element button.delete {
+            color: white;
+            border: none;
+            background: light gray;
+            border-radius: 20px;
+            width: 15px;
+            height: 15px;
+            line-height: 15px;
+            text-align: middle;
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            padding: 0;
+            margin: 0;
+            font-weight: bold;
+            cursor: pointer;
+            opacity:0;
+        }
+        .html-element button.delete:hover {
+
+            opacity:1;
+        }
+
+        .html-element button.out {
+            color: white;
+            border: none;
+            /*border: 3px solid #1A1A1A ;*/
+            background: light gray;
+            border-radius: 10px;
+            width: 23px;
+            height: 23px;
+            line-height: 15px;
+            text-align: middle;
+            position: absolute;
+            top: -16px;
+            left: 87px;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+            outline:0 !important;
+            -webkit-appearance:none;
+
+
+        }
+        .html-element button.in {
+            color: white;
+            border: none;
+            /*border: 3px solid #1A1A1A ;*/
+            background: light gray;
+            border-radius: 10px;
+            width: 23px;
+            height: 23px;
+            line-height: 15px;
+            text-align: middle;
+            position: absolute;
+            top: 93px;
+            left: 88px;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+            outline:0 !important;
+            -webkit-appearance:none;
+
+        }
+        .html-element button.green {
+            color: white;
+            border: none;
+            background: #99FF99;
+            border-radius: 5px;
+            width: 10px;
+            height: 10px;
+            line-height: 15px;
+            text-align: middle;
+            position: absolute;
+            top: 5px;
+            left: 180px;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+            outline:0 !important;
+            -webkit-appearance:none;
+            opacity:1;
+
+        }
+        .html-element button.red {
+            color: white;
+            border: none;
+            background: #D11919;
+            border-radius: 5px;
+            width: 10px;
+            height: 10px;
+            line-height: 15px;
+            text-align: middle;
+            position: absolute;
+            top: 20px;
+            left: 180px;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+            outline:0 !important;
+            -webkit-appearance:none;
+            opacity:1;
+
+        }
+        .html-element button.yellow {
+            color: white;
+            border: none;
+            background: #FFFF99;
+            border-radius: 5px;
+            width: 10px;
+            height: 10px;
+            line-height: 15px;
+            text-align: middle;
+            position: absolute;
+            top: 35px;
+            left: 180px;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+            outline:0 !important;
+            -webkit-appearance:none;
+            opacity:1;
+
+        }
+
+
+
+        .html-element textarea {
+            position: fixed;
+            top: 8px;
+            left: 8px;
+            /*left: 0;
+            right: 0;*/
+            height: 60px;
+            width: 150px;
+            border: 1px solid #D0D0D0;
+            border-radius: 10px;
+            color: #333;
+            background: #FFFFFF;
+            padding: 5px;
+            margin: 5px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-style: normal;
+            font-size: 14px;
+            overflow: hidden;
+            text-align:justify;
+            outline:0 !important;
+            -webkit-appearance:none;
+            opacity:0;
+
+        }
+
+        .html-element textarea:hover{
+            opacity:1;
+            outline:0 !important;
+            -webkit-appearance:none;
+        }
+
+        .html-element span {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: #333;
+            width: 150px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-style: normal;
+            font-size: 14px;
+            text-align:justify;
+
+        }
+    </style>
+<body>
+<div id="myholder"></div>
+</body>
+<script>
+
+    var graph = new joint.dia.Graph;
+
+    var paper = new joint.dia.Paper({
+        el: $('#myholder'),
+        width: 1500,
+        height: 700,
+        model: graph
+    });
+
+    // Create a custom element.
+    // ------------------------
+    joint.shapes.html = {};
+    joint.shapes.html.Element = joint.shapes.basic.Generic.extend(_.extend({}, joint.shapes.basic.PortsModelInterface, {
+        markup: '<g class="rotatable"><g class="scalable"><rect class = "myrect"/></g><g class="inPorts"/><g class="outPorts"/></g>',
+        portMarkup: '<g class="port<%= id %>"><circle class="port-body"/></g>',
+        defaults: joint.util.deepSupplement({
+            type: 'html.Element',
+            size: { width: 200, height: 110 },
+            inPorts: [],
+            outPorts: [],
+            attrs: {
+                '.': { magnet: true},
+                rect: {
+                    stroke: 'none', 'fill-opacity': 0, width: 300, height: 210,
+                },
+                circle: {
+                    r: 6, //circle radius
+                    magnet: true,
+                    left:0,
+                    stroke: 'gray'
+                },
+
+                '.inPorts circle': { fill: 'gray', magnet: 'passive', type: 'input', y: 0},
+                '.outPorts circle': { fill: 'gray', type: 'output' }
+            }
+        }, joint.shapes.basic.Generic.prototype.defaults),
+        getPortAttrs: function (portName, index, total, selector, type) {
+
+            var attrs = {};
+            var portClass = 'port' + index;
+            var portSelector = selector + '>.' + portClass;
+            var portCircleSelector = portSelector + '>circle';
+            attrs[portCircleSelector] = { port: { id: portName || _.uniqueId(type), type: type } };
+            attrs[portSelector] = { ref: 'rect', 'ref-x': (index + 1) * (0.55 / total)};
+            if (selector === '.outPorts') {
+                attrs[portSelector]['ref-dy'] = 15;
+            }
+            return attrs;
+        }
+    }));
+
+    joint.shapes.html.Link = joint.dia.Link.extend({
+
+        defaults: {
+            type: 'html.Link',
+            attrs: {
+                '.connection': { 'stroke-width': 2, stroke: 'gray' },
+                '.marker-source': { fill: 'gray',stroke: 'gray', d: 'M 10 0 L 0 5 L 10 10 z' }
+                /*'.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' }*/
+            },
+            /* labels: [
+             { position: .5, attrs: { text: { text: 'Causes', fill: 'white', 'font-family': 'sans-serif' }, rect: { stroke: '#F39C12', 'stroke-width': 20, rx: 5, ry: 5 } } }
+             ]*/
+        },
+        validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
+            // Prevent loop linking
+            return (magnetS !== magnetT);
+        },
+        // Enable link snapping within 75px lookup radius
+        snapLinks: { radius: 75 }
+    });
+
+    // Create a custom view for that element that displays an HTML div above it.
+    // -------------------------------------------------------------------------
+
+    joint.shapes.html.ElementView = joint.dia.ElementView.extend({
+
+        template: [
+            '<div class="html-element">',
+            '<label class="color-edit"></label>',
+            '<button class="delete">x</button>',
+            '<button class="out">A</button>',
+            '<button class="in">A</button>',
+            '<button class="green"></button>',
+            '<button class="red"></button>',
+            '<button class="yellow"></button>',
+            '<span class="lbl" value="Start writing"></span>',
+            '<textarea class="txt" type="text" value="Start writing"></textarea>',
+            '</div>'
+        ].join(''),
+
+        initialize: function() {
+            _.bindAll(this, 'updateBox');
+            joint.dia.ElementView.prototype.initialize.apply(this, arguments);
+
+            this.$box = $(_.template(this.template)());
+            // Prevent paper from handling pointerdown.
+            this.$box.find('input').on('mousedown click', function(evt) { evt.stopPropagation(); });
+
+            this.$ruler = $('<span>', { style: 'visibility: hidden; white-space: pre' });
+            $(document.body).append(this.$ruler);
+
+            // This is an example of reacting on the input change and storing the input data in the cell model.
+            this.$box.find('textarea').on('input', _.bind(function(evt) {
+
+                var val = $(evt.target).val();
+                this.model.set('textarea', val);
+
+                this.$ruler.html(val);
+                var width = this.$ruler[0].offsetWidth;
+                var height = this.$ruler[0].offsetHeight;
+                var area = width * height;
+                //width = Math.sqrt((3 * area) / 2);
+                //height = ((2 * width)/3);
+                height = area/150;
+                width = 150;
+                if((area > 9000)){
+                    this.model.set('size', { width: width + 50 , height: height + 80 });
+                    this.$box.find('textarea').css({ width: width  , height: height + 30});
+                    this.$box.find('.color-edit').css({width: width + 50 , height: height + 80});
+                    this.$box.find('.in').css({ top: height + 75});
+
+                }
+
+
+            }, this));
+
+            this.$box.find('.green').on('click', _.bind(function() {
+
+
+                this.$box.find('.color-edit').css({background : '#CCE680'});
+
+
+            }, this));
+            this.$box.find('.red').on('click', _.bind(function() {
+
+                this.$box.find('.color-edit').css({ background: '#F0B2B2'});
+
+
+            }, this));
+            this.$box.find('.yellow').on('click', _.bind(function() {
+
+                this.$box.find('.color-edit').css({ background: '#FFFF99'});
+
+
+            }, this));
+
+            this.$box.find('textarea').on('click', _.bind(function() {
+
+                this.$box.find('.delete').css({ opacity:1 });
+                this.$box.find('textarea').css({ opacity:1 });
+
+
+            }, this));
+
+            this.$box.find('textarea').on('blur', _.bind(function() {
+
+                this.$box.find('.delete').css({ opacity:0 });
+                this.$box.find('textarea').css({ opacity:0 });
+
+
+            }, this));
+
+            this.$box.find('.delete').on('click', _.bind(this.model.remove, this.model));
+            // Update the box position whenever the underlying model changes.
+            this.model.on('change', this.updateBox, this);
+            // Remove the box when the model gets removed from the graph.
+            this.model.on('remove', this.removeBox, this);
+
+            this.updateBox();
+
+            this.listenTo(this.model, 'process:ports', this.update);
+            joint.dia.ElementView.prototype.initialize.apply(this, arguments);
+        },
+
+
+        render: function() {
+            joint.dia.ElementView.prototype.render.apply(this, arguments);
+            this.paper.$el.prepend(this.$box);
+            // this.paper.$el.mousemove(this.onMouseMove.bind(this)), this.paper.$el.mouseup(this.onMouseUp.bind(this));
+            this.updateBox();
+            return this;
+        },
+
+        renderPorts: function () {
+            var $inPorts = this.$('.inPorts').empty();
+            var $outPorts = this.$('.outPorts').empty();
+
+            var portTemplate = _.template(this.model.portMarkup);
+
+            _.each(_.filter(this.model.ports, function (p) { return p.type === 'in' }), function (port, index) {
+
+                $inPorts.append(V(portTemplate({ id: index, port: port })).node);
+            });
+            _.each(_.filter(this.model.ports, function (p) { return p.type === 'out' }), function (port, index) {
+
+                $outPorts.append(V(portTemplate({ id: index, port: port })).node);
+            });
+        },
+
+        update: function () {
+
+            // First render ports so that `attrs` can be applied to those newly created DOM elements
+            // in `ElementView.prototype.update()`.
+            this.renderPorts();
+            joint.dia.ElementView.prototype.update.apply(this, arguments);
+        },
+
+        updateBox: function() {
+            // Set the position and dimension of the box so that it covers the JointJS element.
+            var bbox = this.model.getBBox();
+            // Example of updating the HTML with a data stored in the cell model.
+
+            this.$box.find('span').text(this.model.get('textarea'));
+            this.$box.find('textarea').text('Start writing');
+
+            this.$box.css({ width: bbox.width, height: bbox.height, left: bbox.x, top: bbox.y, transform: 'rotate(' + (this.model.get('angle') || 0) + 'deg)' });
+        },
+        removeBox: function(evt) {
+            this.$ruler.remove();
+            this.$box.remove();
+        }
+    });
+
+    // Create JointJS elements and add them to the graph as usual.
+    // -----------------------------------------------------------
+
+    var el1 = new joint.shapes.html.Element({
+        position: { x: 600, y: 250 },
+        size: { width: 200, height: 100 },
+        inPorts: ['in'],
+        outPorts: ['out'],
+        attrs: {
+            '.label': { text: 'Model', 'ref-x': .4, 'ref-y': .2 },
+            rect: { fill: '#2ECC71' },
+            '.inPorts circle': { fill: 'gray' },
+            '.outPorts circle': { fill: 'gray' }
+        },
+        textarea: 'Start writing'
+    });
+
+    graph.addCells([el1]);
+
+
+
+    paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
+
+        var cell = cellView.model;
+
+        /*var el2 = el1.clone();
+         el2.translate(0, 200);*/
+
+        var el2 = new joint.shapes.devs.Model({
+            position: { x: x, y: y + 150},
+            size: { width: 20, height: 20 },
+            inPorts: [''],
+            outPorts: [''],
+            attrs: {
+                '.label': { text: ''},
+                rect: { fill: 'none', stroke: 'gray' },
+                '.inPorts circle': { fill: 'gray', stroke: 'none' },
+                '.outPorts circle': { fill: 'gray', stroke: 'none'}
+
+            }
+        });
+
+
+
+        var link1 = new joint.shapes.html.Link({
+            source: { id: cell.id, port: 'out' },
+            target: { id: el2.id, port: 'in' }
+        });
+
+        var el3 = new joint.shapes.html.Element({
+            position: { x: x - 100, y: y  + 250},
+            size: { width: 200, height: 100 },
+            inPorts: ['in'],
+            outPorts: ['out'],
+            attrs: {
+                /*'.label': { text: 'Model', 'ref-x': .4, 'ref-y': .2 },*/
+                rect: { fill: '#2ECC71' },
+                '.inPorts circle': { fill: 'gray' },
+                '.outPorts circle': { fill: 'gray' }
+            },
+            textarea: 'Start writing'
+        });
+
+
+        var link2 = new joint.shapes.html.Link({
+            source: { id: el2.id, port: 'out' },
+            target: { id: el3.id, port: 'in' }
+        });
+
+        graph.addCells([el2, link1]);
+        graph.addCells([el3, link2]);
+
+        paper.findViewByModel(el2).options.interactive = false;
+
+    });
+
+
+</script>
+</html>
+
