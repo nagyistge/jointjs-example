@@ -104,7 +104,12 @@ define(['joint', 'joint.shapes.devs'], function (joint, Shapes) {
             inPorts: ['in1', 'in2'],
             outPorts: ['out1'],
             attrs: {
-                text: {text: 'Logic'}
+                text: {text: 'Logic'},
+                objs: {
+                    period: 27,
+                    up_time: 15,
+                    pin: 191
+                    }
             }
         });
 

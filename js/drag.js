@@ -1,6 +1,7 @@
-define(function () {
-    function initDragging(joint, graphDrawing) {
+define(['util'], function (util) {
+    function initDragging(joint, graph) {
 
+        var graphDrawing = graph;
         var ClickableView = joint.dia.ElementView.extend({
             pointerdown: function () {
                 this._click = true;
@@ -103,6 +104,7 @@ define(function () {
                 evt.clientX - bbox.width / 2 - paperMainJq.offset().left,
                 evt.clientY - bbox.height / 2 - paperMainJq.offset().top + document.body.scrollTop);
 
+            util.setId(graphDrawing, el);
             graphDrawing.addCells([el]);
             clearBufferData();
         });

@@ -71,8 +71,8 @@ define(['jquery',
                 var input = '<input type="text" value="' + localCellView.model.attr('text/text')+ '">';
                 var $text_input = $(input);
 
-                form.append('<div id="form_header">Element controls</div>');
-                form.prepend('Text:<br>')
+                form.append('<div id="form_header">Element attributes</div>');
+                form.append('Text:<br>')
                 form.append($text_input)
                 form.append('<br><input type="submit" value="Submit">');
 
@@ -80,6 +80,7 @@ define(['jquery',
                     console.log('saved');
                     localCellView.model.attr('text/text', $text_input.val());
                     localCellView = null;
+                    form.empty();
                 });
             }
 
