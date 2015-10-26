@@ -1,3 +1,6 @@
+var dragControls,
+    drawControls;
+
 require(['joint',
         'style!layout_vendor/joint.css',
         'resize',
@@ -6,7 +9,8 @@ require(['joint',
         'joint.shapes.html',
         'init',
         'style!layout/devs',
-        'style!layout/custom'],
+        'style!layout/custom',
+        ],
     function (joint,
               css_join,
               resize,
@@ -20,10 +24,10 @@ require(['joint',
         //var resizeControls =  resize.initResizeControls(joint);
 
         // 2 init dragging
-        var dragControls = drag.init(joint, graphDrawing);
+        dragControls = drag.init(joint, graphDrawing);
 
         // 3 init paper for drawing
-        var drawControls = paper.init(joint, graphDrawing);
+        drawControls = paper.init(joint, graphDrawing);
 
         // 4 init paper events for resizing
         resize.init(joint, drawControls.graph, drawControls.paper);
@@ -34,16 +38,33 @@ require(['joint',
         // - init all controls shema for visual testing
         //init.initMainControls(devs.graph);
 
-        $('#log_btn_to_json').click(function () {
-            var json_str = JSON.stringify(drawControls.graph, null, 4);
-            document.getElementById('log').innerHTML = '<pre>' + json_str + '</pre>';
-        });
-
-        $('#clear_log_btn').click(function () {
-            document.getElementById('log').textContent = '';
-        });
-
-        $('#save_btn_to_json_file').click(function () {
-            var txt = document.getElementById('log').textContent;
-        });
     });
+
+require(['joint', 'fs'], function (joint) {
+
+    $('#log_btn_to_json').click(function () {
+        var json_str = JSON.stringify(drawControls.graph, null, 4);
+        $('#log').val(json_str);
+    });
+
+    $('#clear_log_btn').click(function () {
+        $('#log').val('');
+    });
+
+    $('#save_btn_to_json_file').click(function () {
+        console.log('saved to file:ide.txt')
+        var txt = $('#log').val();
+        var blob = new Blob([txt], {type: "text/plain;charset=utf-8"});
+        window.saveAs(blob, 'ide.txt');
+    });
+
+    $('#log_btn_from_json_file').click(function () {
+        var txt = $('#log').val();
+        if (!txt) {
+            console.log('empty log field. Please insert JSON in log!');
+            return;
+        }
+
+        drawControls.graph.fromJSON(JSON.parse(txt));
+    });
+});

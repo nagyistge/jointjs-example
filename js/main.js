@@ -8,6 +8,7 @@ require.config({
         lodash: '../vendors/js/lodash.min',
         backbone: '../vendors/js/backbone',
         joint: '../vendors/js/joint_095',
+        fs: '../node_modules/browser-filesaver/FileSaver.min',
         app: 'app'
     },
     priority: [
