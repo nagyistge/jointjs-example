@@ -1,9 +1,10 @@
 define(['jquery',
         'lodash',
         'jquery_ui',
+        'form',
         'style!layout_vendor/jquery-ui-1.10.4.custom',
         'style!layout/html'],
-    function ($, _, $ui) {
+    function ($, _, $ui, form) {
 
         function initPaperEvents(joint, graph, paper) {
 
@@ -60,29 +61,29 @@ define(['jquery',
                 return lastCellView.$htmlBox && lastCellView.$htmlBox[0].innerHTML !== resizing_box_body_template;
             }
 
-            function addFormControls() {
-                // 1 check if exist selected element
-                if (!lastCellView) return;
-                var localCellView = lastCellView;
-
-                // 2 creating dynamic form elements
-                var form = $('form');
-                form.empty();
-                var input = '<input type="text" value="' + localCellView.model.attr('text/text')+ '">';
-                var $text_input = $(input);
-
-                form.append('<div id="form_header">Element attributes</div>');
-                form.append('Text:<br>')
-                form.append($text_input)
-                form.append('<br><input type="submit" value="Submit">');
-
-                form.find('input[type=submit]').click(function () {
-                    console.log('saved');
-                    localCellView.model.attr('text/text', $text_input.val());
-                    localCellView = null;
-                    form.empty();
-                });
-            }
+            //function addFormControls() {
+            //    // 1 check if exist selected element
+            //    if (!lastCellView) return;
+            //    var localCellView = lastCellView;
+            //
+            //    // 2 creating dynamic form elements
+            //    var form = $('form');
+            //    form.empty();
+            //    var input = '<input type="text" value="' + localCellView.model.attr('text/text')+ '">';
+            //    var $text_input = $(input);
+            //
+            //    form.append('<div id="form_header">Element attributes</div>');
+            //    form.append('Text:<br>')
+            //    form.append($text_input)
+            //    form.append('<br><input type="submit" value="Submit">');
+            //
+            //    form.find('input[type=submit]').click(function () {
+            //        console.log('saved');
+            //        localCellView.model.attr('text/text', $text_input.val());
+            //        localCellView = null;
+            //        form.empty();
+            //    });
+            //}
 
             /*
              Set selected style for current SVG element.
@@ -110,7 +111,7 @@ define(['jquery',
                 else {
                     lastCellView.$htmlBox = $(_.template(resizing_box_template)());
                     paper.$el.prepend(cellView.$htmlBox);
-                    addFormControls();
+                    form.addFormControls(lastCellView);
                 }
 
                 updateEditableBox(true);
