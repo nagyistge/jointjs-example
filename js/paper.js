@@ -1,10 +1,11 @@
 define(function () {
 
     function initControls(joint, graph) {
+        var paper = $('#paper');
         var paper = new joint.dia.Paper({
-            el: $('#paper'),
-            width: 1000,
-            height: 400,
+            el: paper,
+            width: paper.width(),
+            height: paper.height(),
             gridSize: 1,
             defaultLink: new joint.dia.Link({
                 attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }

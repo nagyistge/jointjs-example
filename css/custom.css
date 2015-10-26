@@ -1,11 +1,35 @@
-.paper {
+#paper {
+    position: relative;
     background: lightgray;
-    /*width: 800;*/
+    width: 800px;
+    height: 500px;
+    display: inline-block;
+
+    border: 1px solid gray;
+    overflow: hidden;
 }
 
-.paper-controls {
-    background: grey;
-    position: relative;
-    /*height: 300;*/
-    /*width: 800;*/
+#paper svg {
+    background: transparent;
 }
+#paper svg .link {
+    z-index: 2;
+}
+
+#paperControls {
+    position: relative;
+    background: grey;
+    width: 800px;
+    height: 200px;
+    display: inline-block;
+
+    border: 1px solid gray;
+    overflow: hidden;
+}
+
+#paperControls svg {
+    background: transparent;
+}
+#paperControls svg .link {
+    z-index: 2;
+}c

@@ -19,11 +19,12 @@ define(function () {
             }
         });
 
+        var paper = $('#paperControls');
         var graphControls = new joint.dia.Graph;
         var paperControls = new joint.dia.Paper({
-            el: $('#paperControls'),
-            width: 1000,
-            height: 310,
+            el: paper,
+            width: paper.width(),
+            height: paper.height(),
             model: graphControls,
             gridSize: 1,
             elementView: ClickableView,

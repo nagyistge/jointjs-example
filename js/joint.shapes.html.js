@@ -67,22 +67,10 @@ define(['joint', 'jquery', 'lodash', 'style!layout/html'], function(joint, $, _)
             joint.dia.ElementView.prototype.render.apply(this, arguments);
             this.paper.$el.prepend(this.$htmlBox);
             //this.paperOffset = this.paper.$el.offset();
-            console.log(this.paper.$el.offset())
             this.updateBox();
             this.paperOffset = null;
 
             return this;
-        },
-        fixedPosition: function (paper) {
-            this.paperOffset = paper.$el.offset();
-            var bbox = this.model.getBBox();
-            this.$htmlBox.css({
-                width: bbox.width,
-                height: bbox.height,
-                left: bbox.x + (this.paperOffset ? this.paperOffset.left : 0),
-                top: bbox.y + (this.paperOffset ? this.paperOffset.top : 0),
-                transform: 'rotate(' + (this.model.get('angle') || 0) + 'deg)'
-            });
         },
         updateBox: function() {
 
@@ -91,7 +79,6 @@ define(['joint', 'jquery', 'lodash', 'style!layout/html'], function(joint, $, _)
             // Example of updating the HTML with a data stored in the cell model.
             this.$htmlBox.find('label').text(this.model.get('label'));
             this.$htmlBox.find('span').text(this.model.get('select'));
-            console.log(this.paperOffset);
             this.$htmlBox.css({
                 width: bbox.width,
                 height: bbox.height,

@@ -21,7 +21,6 @@ require(['joint',
               paper,
               shapeHtml,
               init) {
-        console.log('starting');
         var graphDrawing = new joint.dia.Graph;
 
         // 1 init resizing (it's a bug - init paper after initing controls)
