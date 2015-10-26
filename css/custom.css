@@ -3,10 +3,9 @@
     background: lightgray;
     width: 800px;
     height: 500px;
-    display: inline-block;
-
     border: 1px solid gray;
     overflow: hidden;
+    display: inline-block;
 }
 
 #paper svg {
@@ -18,10 +17,10 @@
 
 #paperControls {
     position: relative;
-    background: grey;
+    background: #7B3A3A;
     width: 800px;
-    height: 120px;
-    display: inline-block;
+    height: 180px;
+    display: table-cell;
 
     border: 1px solid gray;
     overflow: hidden;
@@ -34,13 +33,24 @@
     z-index: 2;
 }
 
+#form {
+    position: relative;
+    background: grey;
+    display: table-cell;
+    width: 200px;
+    /*position: absolute;*/
+}
+
+.element-edit {
+    position: absolute;
+    top: 20px;
+}
+
 #log {
     width: 800px;
-    height: 200px;
-
+    height: 300px;
     font-size: 12px;
     border: 1px solid black;
     padding: 5px;
-    height: 300px;
     overflow:scroll;
 }

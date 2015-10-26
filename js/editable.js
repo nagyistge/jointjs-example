@@ -25,35 +25,79 @@ define(['jquery',
                 '</div>'
             ].join('');
 
-            function updateResizingBox() {
+            function updateEditableBox(startEditable) {
                 if (!lastCellView) return;
 
                 var bbox = lastCellView.model.getBBox();
-                lastCellView.$htmlBox.css({
-                    width: bbox.width,
-                    height: bbox.height,
-                    left: bbox.x,
-                    top: bbox.y,
-                    transform: 'rotate(' + (lastCellView.model.get('angle') || 0) + 'deg)'
-                });
+                if (startEditable) {
+                    lastCellView.$htmlBox.css({
+                        width: bbox.width,
+                        height: bbox.height,
+                        left: bbox.x - 5,
+                        top: bbox.y - 5,
+                        transform: 'rotate(' + (lastCellView.model.get('angle') || 0) + 'deg)',
+                        position: 'absolute',
+                        'border-width': '5px',
+                        'border-color': '#444',
+                        'border-style': 'dotted',
+                        'pointer-events': 'none',
+                        '-webkit-user-select': 'none',
+                        'z-index': 2
+                    });
+                }
+                else {
+                    lastCellView.$htmlBox.css({
+                        width: bbox.width,
+                        height: bbox.height,
+                        left: bbox.x,
+                        top: bbox.y,
+                        transform: 'rotate(' + (lastCellView.model.get('angle') || 0) + 'deg)',
+                    });
+                }
             }
 
             function isHtmlInSVG(){
                 return lastCellView.$htmlBox && lastCellView.$htmlBox[0].innerHTML !== resizing_box_body_template;
             }
 
+            function addFormControls() {
+                // 1 check if exist selected element
+                if (!lastCellView) return;
+                var localCellView = lastCellView;
+
+                // 2 creating dynamic form elements
+                var form = $('form');
+                form.empty();
+                var input = '<input type="text" value="' + localCellView.model.attr('text/text')+ '">';
+                var $text_input = $(input);
+
+                form.append('<div id="form_header">Element controls</div>');
+                form.prepend('Text:<br>')
+                form.append($text_input)
+                form.append('<br><input type="submit" value="Submit">');
+
+                form.find('input[type=submit]').click(function () {
+                    console.log('saved');
+                    localCellView.model.attr('text/text', $text_input.val());
+                    localCellView = null;
+                });
+            }
+
             /*
-                Set selected style for current SVG element.
-                If it doest not have own html element it will be resizible,
-                else it only will be available to delete
+             Set selected style for current SVG element.
+             If it doest not have own html element it will be resizible,
+             else it only will be available to delete
              */
             function addExtraProperties(cellView, paper) {
-                // 0 remember last clicked for sizing cell
+                // 1 check if valid element selected
+                if (cellView.model != null && cellView.model.get('type') == 'link') return;
+
+                // 2 remember last clicked for sizing cell
                 if (lastCellView) deleteExtraProperties();
                 lastCellView = cellView;
 
-                // 2 add html layout for resizing
-                // 2.1 if htmlElement inside SVG
+                // 3 add html layout for resizing
+                // 3.1 if htmlElement inside SVG
                 if (isHtmlInSVG()) {
                     lastCellView.$htmlBox.css('position', 'static');
                     lastCellView.$htmlBox.wrap($(resizing_box_wrappper_template));
@@ -61,21 +105,22 @@ define(['jquery',
                     lastCellView.$htmlBox.prepend($(delete_button_template));
                     lastCellView.htmlElement= true;
                 }
-                // 2.2 SVG element
+                // 3.2 SVG element
                 else {
                     lastCellView.$htmlBox = $(_.template(resizing_box_template)());
                     paper.$el.prepend(cellView.$htmlBox);
+                    addFormControls();
                 }
 
-                updateResizingBox(lastCellView);
+                updateEditableBox(true);
 
-                // 3 delete button
+                // 4 delete button
                 lastCellView.$htmlBox.find('.delete').on('click', function () {
                     cellView.model.remove();
                     deleteExtraProperties(true);
                 });
 
-                // 4 activate resizing
+                // 5 activate resizing
                 if (lastCellView.htmlElement) return;
 
                 lastCellView.$htmlBox.resizable({
@@ -98,16 +143,15 @@ define(['jquery',
                     }
                 });
 
-                // 5 modify position box by model
-                lastCellView.model.on('change', updateResizingBox, lastCellView);
+                // 6 modify position box by model
+                lastCellView.model.on('change', updateEditableBox, lastCellView);
                 lastCellView.model.on('remove', deleteExtraProperties);
-
                 $('.ui-resizable-handle').css('pointer-events', 'auto');
             }
 
             /*
-                Disable selected style for last selected SVG element.
-                Disable resizible style and delete button.
+             Disable selected style for last selected SVG element.
+             Disable resizible style and delete button.
              */
             function deleteExtraProperties(isDeleted){
                 if (!lastCellView || !lastCellView.$htmlBox) return;
@@ -130,7 +174,7 @@ define(['jquery',
                         htmlElement.unwrap();
                         lastCellView.$htmlBox = htmlElement;
                         lastCellView.$htmlBox.css('position', 'absolute');
-                        updateResizingBox();
+                        updateEditableBox();
                     }
                 }
                 // 2 if was SVG element

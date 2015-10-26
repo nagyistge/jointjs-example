@@ -3,7 +3,7 @@ var dragControls,
 
 require(['joint',
         'style!layout_vendor/joint.css',
-        'resize',
+        'editable',
         'drag',
         'paper',
         'joint.shapes.html',
