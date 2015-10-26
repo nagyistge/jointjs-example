@@ -23,28 +23,20 @@
 <a href="example-html.html">Html example</a><br/>
 <a href="example-resize.html">Resize example</a><br/>
 
-<!--<link rel="stylesheet" type="text/css" href="vendors/css/jquery-ui-1.10.4.custom.css">-->
-<!--<link rel="stylesheet" type="text/css" href="vendors/css/joint.css">-->
-<!--<link rel="stylesheet" type="text/css" href="css/html.css">-->
-<!--<link rel="stylesheet" type="text/css" href="css/devs.css">-->
-<!--<link rel="stylesheet" type="text/css" href="css/custom.css">-->
-
 <script data-main="js/main" src="vendors/js/require.js"></script>
 
 <div id="org" class="content-container">
     <h1>LUG HTML5 diagram demo</h1>
     <div id="paperControls" class="paper-controls"></div>
     <div id="paper" class="paper"></div>
-    <!--<button name="log_btn" onclick=" logGraph();">Export to JSON</button>-->
-    <!--<div id="log" class="log"></div>-->
+    <div>
+        <button id="log_btn_to_json">Export to JSON</button>
+        <button id="log_btn_from_json_file">Export from JSON (file)</button>
+        <button id="save_btn_to_json_file">Save JSON (file)</button>
+        <button id="save_btn_to_json_server">Save JSON (server)</button>
+        <button id="clear_log_btn">Clear</button>
+        <textarea id="log" class="log"></textarea>
+    </div>
+
 </div>
-
-<!--<script>-->
-    <!--function logGraph()-->
-    <!--{-->
-        <!--var json_str = JSON.stringify(graph, null, 4);-->
-        <!--document.getElementById('log').innerHTML = '<pre>' + json_str + '</pre>';-->
-    <!--}-->
-<!--</script>-->
-
 </body></html>

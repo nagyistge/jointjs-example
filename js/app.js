@@ -1,10 +1,3 @@
-//require(['resize'], function (resize) {
-//    //init.initControls(drag.graphControls);
-//    //init.initMainControls(devs.graph);
-//    resize();
-//});
-
-
 require(['joint',
         'style!layout_vendor/joint.css',
         'resize',
@@ -40,4 +33,17 @@ require(['joint',
 
         // - init all controls shema for visual testing
         //init.initMainControls(devs.graph);
+
+        $('#log_btn_to_json').click(function () {
+            var json_str = JSON.stringify(drawControls.graph, null, 4);
+            document.getElementById('log').innerHTML = '<pre>' + json_str + '</pre>';
+        });
+
+        $('#clear_log_btn').click(function () {
+            document.getElementById('log').textContent = '';
+        });
+
+        $('#save_btn_to_json_file').click(function () {
+            var txt = document.getElementById('log').textContent;
+        });
     });

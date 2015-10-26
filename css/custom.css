@@ -20,7 +20,7 @@
     position: relative;
     background: grey;
     width: 800px;
-    height: 200px;
+    height: 120px;
     display: inline-block;
 
     border: 1px solid gray;
@@ -32,4 +32,9 @@
 }
 #paperControls svg .link {
     z-index: 2;
-}c
+}
+
+#log {
+    width: 800px;
+    height: 200px;
+}
