@@ -8,17 +8,19 @@ define(['joint'], function (joint) {
         // 2 creating dynamic form elements
         var form = $('form');
         form.empty();
-        var input = '<input type="text" value="' + localCellView.model.attr('text/text')+ '">';
-        var $text_input = $(input);
 
-        form.append('<div id="form_header">Element attributes</div>');
-        form.append('Text:<br>')
+        console.log(JSON.stringify(localCellView.model.attr('custom_attrs')));
+        var input = '<textarea type="text"></textarea>';
+        var $text_input = $(input);
+        $text_input.val(JSON.stringify(localCellView.model.attr('custom_attrs')));
+
+        form.append('<span> Custom attributes:<br></span>')
         form.append($text_input)
         form.append('<br><input type="submit" value="Submit">');
 
         form.find('input[type=submit]').click(function () {
             console.log('saved');
-            localCellView.model.attr('text/text', $text_input.val());
+            localCellView.model.attr('custom_attrs', JSON.parse($text_input.val()));
             localCellView = null;
             form.empty();
         });

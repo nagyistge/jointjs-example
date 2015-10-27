@@ -42,7 +42,6 @@ require(['joint',
 
         // - init all controls shema for visual testing
         //init.initMainControls(devs.graph);
-
     });
 
 require(['joint', 'fs', 'util'],
@@ -66,6 +65,7 @@ require(['joint', 'fs', 'util'],
 
         function clearLog() {
             $('#log').val('');
+            $('#server_log').val('');
         }
 
         function saveToJsonFile() {
@@ -76,33 +76,9 @@ require(['joint', 'fs', 'util'],
         }
 
         function getJsonFromServer() {
-            function resp(data){
-                console.log(data)
-            }
-            //$.ajax({
-            //    type:"GET",
-            //    dataType: "jsonp",
-            //    url: "http://lug.pp.ciklum.com:8080/api/getMetadata?key=goal3_led?callback=resp",
-            //    success: function(data) {
-            //       console.log('success', data);
-            //    },
-            //    error: function(jqXHR, textStatus, errorThrown) {
-            //        console.log(jqXHR.status);
-            //    },
-            //    //jsonp: "resp",
-            //
-            //    // Tell jQuery we're expecting JSONP
-            //});
-
-            //$.getJSON("https://api.github.com/users/mralexgray/repos?callback=?", function(result){
-            //    //response data are now in the result variable
-            //    alert(result);
-            //});
-
-
             $.ajax({
-                url: "https://api.github.com/users/mralexgray/repos",
-
+                url: "http://localhost:8888/getMetaData?key=goal3_led",
+                //url: "http://lug.pp.ciklum.com:8080/api/getMetadata?key=goal3_led",
                 // The name of the callback parameter, as specified by the YQL service
                 jsonp: "callback",
 
@@ -110,35 +86,30 @@ require(['joint', 'fs', 'util'],
                 dataType: "jsonp",
 
                 // Work with the response
-                success: function( response ) {
-                    console.log( response ); // server response
+                success: function(response) {
+
                 }
             });
-
-            //$.getJSON('http://lug.pp.ciklum.com:8080/api/getMetadata?key=goal3_led?callback=?'
-            //    , function (data) {
-            //    console.log('1st', data);
-            //}).success(function (data) {
-            //        console.log('success', data)
-            //    }).done(function (data) {
-            //        console.log('done', data);
-            //    }).fail(function (error, e1, e2) {
-            //        console.log('error', error, e1, e2);
-            //    });
-
-
-            //
-            //$.getJSON('http://lug.pp.ciklum.com:8080/api/getMetadata?key=goal3_led', function (data) {
-            //    clearLog();
-            //    $('#log').val(data);
-            //}).done(function (data) {
-            //}).fail(function (error) {
-            //    console.log('Error during getting data');
-            //});
         }
 
         function setJsonToServer() {
-            console.log('save to server');
+            var ideJson = $('#log').val();
+            var serverJson = util.convertIdeJsonToServerJson(ideJson);
+            $('#server_log').val(serverJson);
+            //$.ajax({
+            //    url: "http://localhost:8888/getMetaData?key=goal3_led",
+            //    //url: "http://lug.pp.ciklum.com:8080/api/getMetadata?key=goal3_led",
+            //    // The name of the callback parameter, as specified by the YQL service
+            //    jsonp: "callback",
+            //
+            //    // Tell jQuery we're expecting JSONP
+            //    dataType: "jsonp",
+            //
+            //    // Work with the response
+            //    success: function(response) {
+            //
+            //    }
+            //});
         }
 
         $('#btn_to_json').click(exportToJson);

@@ -61,30 +61,6 @@ define(['jquery',
                 return lastCellView.$htmlBox && lastCellView.$htmlBox[0].innerHTML !== resizing_box_body_template;
             }
 
-            //function addFormControls() {
-            //    // 1 check if exist selected element
-            //    if (!lastCellView) return;
-            //    var localCellView = lastCellView;
-            //
-            //    // 2 creating dynamic form elements
-            //    var form = $('form');
-            //    form.empty();
-            //    var input = '<input type="text" value="' + localCellView.model.attr('text/text')+ '">';
-            //    var $text_input = $(input);
-            //
-            //    form.append('<div id="form_header">Element attributes</div>');
-            //    form.append('Text:<br>')
-            //    form.append($text_input)
-            //    form.append('<br><input type="submit" value="Submit">');
-            //
-            //    form.find('input[type=submit]').click(function () {
-            //        console.log('saved');
-            //        localCellView.model.attr('text/text', $text_input.val());
-            //        localCellView = null;
-            //        form.empty();
-            //    });
-            //}
-
             /*
              Set selected style for current SVG element.
              If it doest not have own html element it will be resizible,
