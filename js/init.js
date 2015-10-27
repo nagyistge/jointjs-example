@@ -99,16 +99,6 @@ define(['joint', 'joint.shapes.devs'], function (joint, Shapes) {
             }
         });
 
-        //var c11 = new Shapes.Coupled({
-        //    position: {x: 55, y: 125},
-        //    size: {width: 100, height: 50},
-        //    inPorts: ['in1', 'in2'],
-        //    outPorts: ['out1'],
-        //    attrs: {
-        //        text: {text: 'Logic'},
-        //    }
-        //});
-
         var a1 = new Shapes.Atomic({
             position: {x: 45, y: 65},
             size: {width: 100, height: 50},
@@ -119,7 +109,7 @@ define(['joint', 'joint.shapes.devs'], function (joint, Shapes) {
             }
         });
 
-        var in1 = new Shapes.Atomic({
+        var can_rx = new Shapes.Atomic({
             position: {x: 45, y: 125},
             size: {width: 100, height: 50},
             outPorts: ['out'],
@@ -132,40 +122,53 @@ define(['joint', 'joint.shapes.devs'], function (joint, Shapes) {
         });
 
         var in2 = new Shapes.Atomic({
-            position: {x: 45, y: 190},
-            size: {width: 100, height: 50},
-            outPorts: ['out'],
-            attrs: {
-                text: {text: 'Stop Button'}
-            }
-        });
-
-        var out1 = new Shapes.Atomic({
-            position: {x: 45, y: 250},
-            size: {width: 100, height: 50},
-            inPorts: ['a', 'b'],
-            attrs: {
-                text: {text: 'Actuator'}
-            }
-        });
-
-        var out2 = new Shapes.Atomic({
-            position: {x: 45, y: 310},
+            position: {x: 45, y: 185},
             size: {width: 100, height: 50},
             inPorts: ['in'],
             attrs: {
-                text: {text: 'Led'}
+                text: {text: 'block_logger'}
+            }
+        });
+
+        var block_divide = new Shapes.Atomic({
+            position: {x: 45, y: 245},
+            size: {width: 100, height: 50},
+            inPorts: ['a', 'b'],
+            attrs: {
+                text: {text: 'block_divide'},
+                custom_attrs: {
+                    output_type:'int',
+                    b:1000
+                }
+            }
+        });
+
+        var can_tx = new Shapes.Atomic({
+            position: {x: 45, y: 305},
+            size: {width: 100, height: 50},
+            inPorts: ['in'],
+            attrs: {
+                text: {text: 'can_tx'}
+            }
+        });
+
+        var block_pwm_gpio = new Shapes.Atomic({
+            position: {x: 45, y: 365},
+            size: {width: 130, height: 50},
+            inPorts: ['a', 'b'],
+            attrs: {
+                text: {text: 'block_pwm_gpio'}
             }
         });
 
         var h1 = new HtmlShapes.Element({
-            position: {x: 15, y: 370},
+            position: {x: 15, y: 425},
             size: {width: 170, height: 100},
             label: 'I am HTML',
             select: 'one'
         });
 
-        graph.addCells([c1, a1, in1, in2, out1, out2, h1]);
+        graph.addCells([c1, a1, can_rx, in2, block_divide, can_tx, block_pwm_gpio, h1]);
     }
 
     function initControls(graph, paper, HtmlShapes) {

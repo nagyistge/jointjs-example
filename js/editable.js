@@ -178,6 +178,10 @@ define(['jquery',
             }
 
             function editibleOff(event) {
+
+                // hide form with attrs for editing
+                form.hideForm();
+
                 if (!lastCellView) return;
 
                 var offset = lastCellView.$htmlBox.offset();

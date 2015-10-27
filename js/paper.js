@@ -1,15 +1,42 @@
-define(function () {
+define(['util'], function (util) {
+
+
 
     function initControls(joint, graph) {
+
         var paper = $('#paper');
         var paper = new joint.dia.Paper({
             el: paper,
             width: paper.width(),
             height: paper.height(),
             gridSize: 1,
-            defaultLink: new joint.dia.Link({
-                attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
-            }),
+            defaultLink: function (cellView, magnetDOMElement) {
+                var link = new joint.dia.Link({
+                    attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
+                });
+
+                util.setId(graph, link);
+                return link;
+
+                //if (magnetDOMElement.getAttribute('port') === 'output') {
+                //    var link = new joint.dia.Link({
+                //        attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
+                //    });
+                //
+                //    util.setId(graph, link);
+                //    return link;
+                //} else {
+                //    var link = new joint.dia.Link({
+                //        attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
+                //    })
+                //    util.setId(graph, link);
+                //
+                //    return link;
+                //}
+            },
+            //new joint.dia.Link({
+            //    attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
+            //}),
             model: graph,
             snapLinks: true,
             embeddingMode: true,
@@ -21,6 +48,18 @@ define(function () {
             },
             markAvailable: true
         });
+
+        function addLink(cellView, magnetDOMElement) {
+            if (magnetDOMElement.getAttribute('port') === 'output') {
+                new joint.dia.Link({
+                    attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
+                })
+            } else {
+                new joint.dia.Link({
+                    attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
+                })
+            }
+        }
 
         /* rounded corners */
         /*
@@ -76,11 +115,8 @@ define(function () {
         init: initControls
     };
 
-//
-//graph.on('all', function(eventName, cell) {
-//    console.log(arguments);
-//});
-//
+
+
 //paper.on('blank:pointerdown', function(evt, x, y) {
 //    //alert('pointerdown on a blank area in the paper.')
 //})

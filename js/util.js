@@ -77,7 +77,7 @@ define(['joint'], function (joint) {
 
             return keywords.filter(function (item) {
                 return item != undefined;
-            });
+            })[0];
         }
 
         var ideObjects = JSON.parse(ideJson);
@@ -100,7 +100,7 @@ define(['joint'], function (joint) {
                 var innerCell = cell[prop];
 
                 if (prop === 'attrs') {
-                    var key = getInnerProps(prop)[0];
+                    var key = getInnerProps(prop);
                     var custom_attrs = cell[prop][key];
                     if (custom_attrs) {
                         serverCell[prop] = custom_attrs;
@@ -108,7 +108,7 @@ define(['joint'], function (joint) {
                     continue;
                 }
 
-                if (prop === 'type') {
+                if (prop === 'type' && cell['attrs']['text']) {
                     serverCell[prop] = cell['attrs']['text']['text'];
                     continue;
                 }
@@ -119,7 +119,7 @@ define(['joint'], function (joint) {
                 else {
                     var innerProps = getInnerProps(prop);
                     // take full  value (example "outPorts")
-                    if (innerProps.length == 0) {
+                    if (!innerProps || innerProps.length == 0) {
                         serverCell[prop] = innerCell;
                     }
                     // filter by rules

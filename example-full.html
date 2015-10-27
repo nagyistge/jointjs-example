@@ -6,43 +6,25 @@
 </head>
 <body>
 
-<!--<a href="example-dragdrop.html">DragDrop example</a><br/>-->
-<!--<a href="example-html.html">Html example</a><br/>-->
-<!--<a href="example-resize.html">Resize example</a><br/>-->
-
 <script data-main="js/main" src="vendors/js/require.js"></script>
 
-<!--<div id="org" class="content-container">-->
-<!--<div id="paperControls" class="paper-controls"></div>-->
-<!--<div id="form" class="form">-->
-<!--<form class="element-edit" action="javascript:void(0);">-->
-<!--</form>-->
-<!--</div>-->
-<!--<div id="paper" class="paper"></div>-->
-<!--<div>-->
-<!--<button id="btn_to_json">Export to JSON</button><br/>-->
-<!--<button id="btn_from_json">Export from JSON</button><br/>-->
-<!--<button id="btn_from_json_server">Get JSON (server)</button><br/>-->
-<!--<button id="btn_to_json_server">Save JSON (server)</button><br/>-->
-<!--<button id="btn_save_to_json_file">Save JSON (file)</button><br/>-->
-<!--<button id="btn_clear_log">Clear</button><br/>-->
-<!--<textarea id="log" class="log"></textarea>-->
-<!--</div>-->
-<!--</div>-->
-
 <div class="container">
-    <div class="column-center"><div id="paper" class="paper"></div></div>
-    <div class="column-left"><div id="paperControls" class="paper-controls"></div></div>
+    <div class="column-center">
+        <div id="paper" class="paper"></div>
+    </div>
+    <div class="column-left">
+        <div id="paperControls" class="paper-controls"></div>
+    </div>
     <div class="column-right">
         <div id="form" class="form">
-            <form action="javascript:void(0);">
-            </form>
+            <form action="javascript:void(0);"></form>
         </div>
         <div class="button-container">
             <button id="btn_to_json">Export to JSON</button><br/>
             <button id="btn_from_json">Export from JSON</button><br/>
-            <button id="btn_from_json_server">Get JSON (server)</button><br/>
-            <button id="btn_to_json_server">Save JSON (server)</button><br/>
+            <button id="btn_from_json_server">Get JSON from server</button><br/>
+            <button id="btn_to_json_server_send">Send JSON to server</button><br/>
+            <button id="btn_to_json_server">Convert to server json</button><br/>
             <button id="btn_save_to_json_file">Save JSON (file)</button><br/>
             <button id="btn_clear_log">Clear</button><br/>
         </div>

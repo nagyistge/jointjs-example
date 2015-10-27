@@ -23,7 +23,7 @@ require(['joint',
 
         var drawGraph = new joint.dia.Graph;
         drawGraph.current_id = 0;
-        drawGraph.max_id = 10000;
+        drawGraph.max_id = 100;
 
         // 1 init resizing (it's a bug - init paper after initing controls)
         //var resizeControls =  resize.initResizeControls(joint);
@@ -33,6 +33,14 @@ require(['joint',
 
         // 3 init paper for drawing
         drawControls = paper.init(joint, drawGraph);
+
+
+        //dragControls.graph.on('all', function(eventName, cell) {
+        //    console.log(arguments);
+        //});
+        //drawGraph.on('all', function(eventName, cell) {
+        //    console.log(arguments);
+        //});
 
         // 4 init paper events for resizing
         editable.init(joint, drawControls.graph, drawControls.paper);
@@ -92,7 +100,13 @@ require(['joint', 'fs', 'util'],
             });
         }
 
-        function setJsonToServer() {
+        function convertToServerJson() {
+            var ideJson = $('#log').val();
+            var serverJson = util.convertIdeJsonToServerJson(ideJson);
+            $('#server_log').val(serverJson);
+        }
+
+        function sendJsonToServer() {
             var ideJson = $('#log').val();
             var serverJson = util.convertIdeJsonToServerJson(ideJson);
             $('#server_log').val(serverJson);
@@ -117,5 +131,6 @@ require(['joint', 'fs', 'util'],
         $('#btn_clear_log').click(clearLog);
         $('#btn_save_to_json_file').click(saveToJsonFile);
         $('#btn_from_json_server').click(getJsonFromServer);
-        $('#btn_to_json_server').click(setJsonToServer);
+        $('#btn_to_json_server').click(convertToServerJson);
+        $('#btn_to_json_server_send').click(sendJsonToServer);
     });
