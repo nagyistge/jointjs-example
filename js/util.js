@@ -44,7 +44,7 @@ define(['joint'], function (joint) {
         graph.current_id = Number.parseInt(graph.current_id);
     }
 
-    function convertIdeJsonToServerJson(ideJson) {
+    function convertIdeJsonToServerJson(ideJson, graph, paper) {
         var serverJson = '';
         if (!ideJson) return serverJson;
 
@@ -108,8 +108,23 @@ define(['joint'], function (joint) {
                     continue;
                 }
 
+                // get text instead of type (text we could setup)
                 if (prop === 'type' && cell['attrs']['text']) {
                     serverCell[prop] = cell['attrs']['text']['text'];
+                    continue;
+                }
+
+                if ((prop === 'source' || prop == 'target') && cell['type'] === 'link') {
+                    var id = cell[prop].id;
+                    var selector = cell[prop].selector;
+                    var model = paper.getModelById(id);
+                    var view = paper.findViewByModel(model);
+                    var port = view.$el.find(selector);
+                    var value = port.attr('port');
+                    serverCell[prop] = {
+                        id:id,
+                        selector:value
+                    };
                     continue;
                 }
 

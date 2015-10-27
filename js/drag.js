@@ -76,6 +76,8 @@ define(['util'], function (util) {
         paperControls.on('cell:pointermove',function (cellView, evt, x, y) {
             bodyJq.bind('mousemove', function(e){
 
+                if (!cellView.model || !(cellView.model.getBBox instanceof Function)) return;
+
                 if (!bufferControl) {
                     bufferControl = $("div.box");
                     bufferControl.css('visibility', 'visible');
@@ -112,10 +114,12 @@ define(['util'], function (util) {
         paperControls.on('cell:pointerdown', function (cellView, evt, x, y) {
             if (newElement) return;
 
+            newElement = cellView.model.clone();
+            if (!(newElement.position instanceof Function)) return;
+
             bodyJq = bodyJq || $('body');
             bodyJq.append('<div id="paperBuffer" class="box" style="z-index: 100;display:block;opacity:.7; visibility: hidden"></div>');
 
-            newElement = cellView.model.clone();
             newElement.position(0, 0);
 
             graphBuffer = new joint.dia.Graph;

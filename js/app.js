@@ -102,27 +102,26 @@ require(['joint', 'fs', 'util'],
 
         function convertToServerJson() {
             var ideJson = $('#log').val();
-            var serverJson = util.convertIdeJsonToServerJson(ideJson);
+            var serverJson = util.convertIdeJsonToServerJson(ideJson, drawControls.graph, drawControls.paper);
             $('#server_log').val(serverJson);
         }
 
         function sendJsonToServer() {
             var ideJson = $('#log').val();
-            var serverJson = util.convertIdeJsonToServerJson(ideJson);
+            var serverJson = util.convertIdeJsonToServerJson(ideJson, drawControls.graph, drawControls.paper);
             $('#server_log').val(serverJson);
+
+            var data = [{"key":"ide_test","metaData":serverJson}];
+
             //$.ajax({
-            //    url: "http://localhost:8888/getMetaData?key=goal3_led",
-            //    //url: "http://lug.pp.ciklum.com:8080/api/getMetadata?key=goal3_led",
-            //    // The name of the callback parameter, as specified by the YQL service
-            //    jsonp: "callback",
-            //
-            //    // Tell jQuery we're expecting JSONP
-            //    dataType: "jsonp",
-            //
-            //    // Work with the response
-            //    success: function(response) {
-            //
-            //    }
+            //    type: "POST",
+            //    url: 'http://localhost:8888/setMetaData',
+            //    data: data,
+            //    crossDomain: true,
+            //    success: function (response) {
+            //        console.log('sent data, response:', response);
+            //    },
+            //    dataType: 'json'
             //});
         }
 

@@ -16,6 +16,9 @@ define(['util'], function (util) {
                 });
 
                 util.setId(graph, link);
+
+                //paper.getModelById(link.get('id'));
+                //link.source.get('selector');
                 return link;
 
                 //if (magnetDOMElement.getAttribute('port') === 'output') {
