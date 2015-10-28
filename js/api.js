@@ -35,9 +35,10 @@ define(['joint', 'fs', 'util'],
             }
 
             function getJsonFromServer() {
+                var get_url = $('#get_url').val();
                 $.ajax({
                     //url: "http://localhost:8888/getMetaData?key=goal3_led",
-                    url: "http://localhost:8888/getMetaData?key=ide_client",
+                    url: get_url,
                     //url: "http://localhost:8888/getMetaData?key=ide_server",
                     //url: "http://lug.pp.ciklum.com:8080/api/getMetadata?key=goal3_led",
                     // The name of the callback parameter, as specified by the YQL service
@@ -82,11 +83,13 @@ define(['joint', 'fs', 'util'],
                 }
 
                 // 3 add extra fields and send to server (server json)
+                var post_url = $('#post_url').val();
+                var server_key = $('#server_metadata_name').val();
                 if (serverJson) {
                     var serverData = {
                         data: [
                             {
-                                "key": "ide_server",
+                                "key": server_key,
                                 "metadata": JSON.stringify(JSON.parse(serverJson), null, 4)
                             }
                         ]
@@ -94,7 +97,7 @@ define(['joint', 'fs', 'util'],
 
                     $.ajax({
                         type: "POST",
-                        url: 'http://localhost:8888/setMetaData',
+                        url: post_url,
                         data: serverData,
                         crossDomain: true,
                         success: function (response) {
@@ -110,10 +113,11 @@ define(['joint', 'fs', 'util'],
                     if (jsonData.cells.length == 0)
                         return;
 
+                    var client_key = $('#client_metadata_name').val();
                     var data = {
                         data: [
                             {
-                                "key": "ide_client",
+                                "key": client_key,
                                 "metadata": JSON.stringify(jsonData, null, 4)
                             }
                         ]
@@ -121,7 +125,7 @@ define(['joint', 'fs', 'util'],
 
                     $.ajax({
                         type: "POST",
-                        url: 'http://localhost:8888/setMetaData',
+                        url: post_url,
                         data: data,
                         crossDomain: true,
                         success: function (response) {

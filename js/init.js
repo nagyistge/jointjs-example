@@ -180,8 +180,16 @@ define(['joint', 'joint.shapes.devs'], function (joint, Shapes) {
         graph.addCells([c1, a1, can_rx, in2, block_divide, can_tx, block_pwm_gpio, h1]);
     }
 
+    function initFields() {
+        $('#client_metadata_name').val('ide_client');
+        $('#server_metadata_name').val('ide_server');
+        $('#get_url').val('http://localhost:8888/getMetaData?key=ide_client');
+        $('#post_url').val('http://localhost:8888/setMetaData');
+    }
+
     return {
         initMainControls: initMainControls,
-        initControls: initControls
+        initControls: initControls,
+        initFields: initFields
     };
 });

@@ -70,6 +70,11 @@ form * {
     width: 1100px;
 }
 
+
+.container .footer input {
+    width: 543px;
+}
+
 .container .footer textarea {
     width: 535px;
     height: 500px;
@@ -79,8 +84,16 @@ form * {
     overflow:scroll;
 }
 
-.container .footer span{
-    padding-right:450px;
+.container .footer span:nth-child(-n + 2) {
+    padding-right:483px;
+}
+
+.container .footer span:nth-child(n + 3) {
+    padding-right:417px;
+}
+
+.container .footer span:nth-child(n + 8) {
+    padding-right:500px;
 }
 
 .column-left {
@@ -91,14 +104,14 @@ form * {
 }
 
 .column-center {
-    width: 590px;
+    width: 690px;
     background: grey;
     margin-left: 210px;
     position: absolute;
 }
 
 .column-right {
-    margin-right: -300px;
+    margin-right: -400px;
     background: #7B3A3A;
     width: 300px;
     right: 0;

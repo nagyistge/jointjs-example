@@ -27,6 +27,9 @@ require(['joint',
         drawGraph.current_id = 0;
         drawGraph.max_id = 100;
 
+        // 0 init fields
+        init.initFields();
+
         // 1 init dragging
         dragControls = drag.init(joint, drawGraph);
 
