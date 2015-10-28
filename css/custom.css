@@ -18,7 +18,7 @@
 #paperControls {
     position: relative;
     background: #7B3A3A;
-    width: 200px;
+    width: 210px;
     height: 600px;
     /*display: table-cell;*/
 
@@ -87,16 +87,16 @@ form * {
 }
 
 .column-left {
-    width: 200px;
+    width: 210px;
     left: 0;
     background: lightgray;
     position: absolute;
 }
 
 .column-center {
-    width: 600px;
+    width: 590px;
     background: grey;
-    margin-left: 200px;
+    margin-left: 210px;
     position: absolute;
 }
 

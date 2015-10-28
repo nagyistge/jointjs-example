@@ -95,7 +95,8 @@ require(['joint', 'fs', 'util'],
 
                 // Work with the response
                 success: function(response) {
-
+                    $('#server_log').val('');
+                    $('#server_log').val(JSON.stringify(response, null, 4));
                 }
             });
         }
@@ -107,22 +108,27 @@ require(['joint', 'fs', 'util'],
         }
 
         function sendJsonToServer() {
-            var ideJson = $('#log').val();
-            var serverJson = util.convertIdeJsonToServerJson(ideJson, drawControls.graph, drawControls.paper);
-            $('#server_log').val(serverJson);
+            var serverJson = $('#server_log').val();
 
+            if (!serverJson) {
+                serverJson = JSON.stringify(drawControls.graph, null, 4);
+                serverJson = util.convertIdeJsonToServerJson(serverJson, drawControls.graph, drawControls.paper);
+            }
+
+            $('#server_log').val(serverJson);
+            serverJson = JSON.stringify(JSON.parse(serverJson))
             var data = [{"key":"ide_test","metaData":serverJson}];
 
-            //$.ajax({
-            //    type: "POST",
-            //    url: 'http://localhost:8888/setMetaData',
-            //    data: data,
-            //    crossDomain: true,
-            //    success: function (response) {
-            //        console.log('sent data, response:', response);
-            //    },
-            //    dataType: 'json'
-            //});
+            $.ajax({
+                type: "POST",
+                url: 'http://localhost:8888/setMetaData',
+                data: data,
+                crossDomain: true,
+                success: function (response) {
+                    console.log('sent data, response:', response);
+                },
+                dataType: 'json'
+            });
         }
 
         $('#btn_to_json').click(exportToJson);

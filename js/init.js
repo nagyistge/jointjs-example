@@ -134,6 +134,7 @@ define(['joint', 'joint.shapes.devs'], function (joint, Shapes) {
             position: {x: 45, y: 245},
             size: {width: 100, height: 50},
             inPorts: ['a', 'b'],
+            outPorts: ['out'],
             attrs: {
                 text: {text: 'block_divide'},
                 custom_attrs: {
@@ -148,16 +149,24 @@ define(['joint', 'joint.shapes.devs'], function (joint, Shapes) {
             size: {width: 100, height: 50},
             inPorts: ['in'],
             attrs: {
-                text: {text: 'can_tx'}
+                text: {text: 'can_tx'},
+                custom_attrs: {
+                    can_id: 101
+                }
             }
         });
 
         var block_pwm_gpio = new Shapes.Atomic({
-            position: {x: 45, y: 365},
+            position: {x: 75, y: 365},
             size: {width: 130, height: 50},
-            inPorts: ['a', 'b'],
+            inPorts: ['period', 'up_time'],
             attrs: {
-                text: {text: 'block_pwm_gpio'}
+                text: {text: 'block_pwm_gpio'},
+                custom_attrs: {
+                    period: 27,
+                    up_time: 15,
+                    pin: 191
+                }
             }
         });
 

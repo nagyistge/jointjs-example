@@ -1,7 +1,4 @@
 define(['util'], function (util) {
-
-
-
     function initControls(joint, graph) {
 
         var paper = $('#paper');
@@ -16,9 +13,6 @@ define(['util'], function (util) {
                 });
 
                 util.setId(graph, link);
-
-                //paper.getModelById(link.get('id'));
-                //link.source.get('selector');
                 return link;
 
                 //if (magnetDOMElement.getAttribute('port') === 'output') {
@@ -118,10 +112,7 @@ define(['util'], function (util) {
         init: initControls
     };
 
-
-
 //paper.on('blank:pointerdown', function(evt, x, y) {
 //    //alert('pointerdown on a blank area in the paper.')
 //})
-
 });

@@ -114,7 +114,8 @@ define(['joint'], function (joint) {
                     continue;
                 }
 
-                if ((prop === 'source' || prop == 'target') && cell['type'] === 'link') {
+                // find by selector port name
+                if ((~['source', 'target'].indexOf(prop)) && cell['type'] === 'link') {
                     var id = cell[prop].id;
                     var selector = cell[prop].selector;
                     var model = paper.getModelById(id);
@@ -153,6 +154,10 @@ define(['joint'], function (joint) {
                         }
                     }
                 }
+            }
+
+            if (!~Object.keys(serverCell).indexOf('attrs')) {
+                serverCell['attrs'] = {};
             }
 
             serverObjects.cells.push(serverCell);
