@@ -88,7 +88,7 @@ define(['joint', 'joint.shapes.devs'], function (joint, Shapes) {
         connect(c1, 'out2', out2, 'in');
     };
 
-    function initControls_vertical(graph, paper, HtmlShapes) {
+    function initControls(graph, paper, HtmlShapes) {
         var c1 = new Shapes.Coupled({
             position: {x: 45, y: 5},
             size: {width: 100, height: 50},
@@ -180,90 +180,8 @@ define(['joint', 'joint.shapes.devs'], function (joint, Shapes) {
         graph.addCells([c1, a1, can_rx, in2, block_divide, can_tx, block_pwm_gpio, h1]);
     }
 
-    function initControls(graph, paper, HtmlShapes) {
-        var c1 = new Shapes.Coupled({
-            position: {x: 55, y: 5},
-            size: {width: 100, height: 50},
-            inPorts: ['in1', 'in2'],
-            outPorts: ['out1', 'out2'],
-            attrs: {
-                text: {text: 'Logic'}
-            }
-        });
-
-        var c11 = new Shapes.Coupled({
-            position: {x: 55, y: 125},
-            size: {width: 100, height: 50},
-            inPorts: ['in1', 'in2'],
-            outPorts: ['out1'],
-            attrs: {
-                text: {text: 'Logic'},
-            }
-        });
-
-        var a1 = new Shapes.Atomic({
-            position: {x: 55, y: 65},
-            size: {width: 100, height: 50},
-            inPorts: ['a', 'b'],
-            outPorts: ['x', 'y'],
-            attrs: {
-                text: {text: 'AND/NAND'}
-            }
-        });
-
-        var in1 = new Shapes.Atomic({
-            position: {x: 215, y: 5},
-            size: {width: 100, height: 50},
-            outPorts: ['out'],
-            attrs: {
-                text: {text: 'can_rx'},
-                custom_attrs: {
-                    can_id:100
-                }
-            }
-        });
-
-        var in2 = new Shapes.Atomic({
-            position: {x: 215, y: 65},
-            size: {width: 100, height: 50},
-            outPorts: ['out'],
-            attrs: {
-                text: {text: 'Stop Button'}
-            }
-        });
-
-        var out1 = new Shapes.Atomic({
-            position: {x: 390, y: 5},
-            size: {width: 100, height: 50},
-            inPorts: ['a', 'b'],
-            attrs: {
-                text: {text: 'Actuator'}
-            }
-        });
-
-        var out2 = new Shapes.Atomic({
-            position: {x: 390, y: 65},
-            size: {width: 100, height: 50},
-            inPorts: ['in'],
-            attrs: {
-                text: {text: 'Led'}
-            }
-        });
-
-        var h1 = new HtmlShapes.Element({
-            position: {x: 520, y: 5},
-            size: {width: 170, height: 100},
-            label: 'I am HTML',
-            select: 'one'
-        });
-
-        graph.addCells([c1, c11, a1, in1, in2, out1, out2, h1]);
-    }
-
-
-
     return {
         initMainControls: initMainControls,
-        initControls: initControls_vertical  //initControls(graphControls);
+        initControls: initControls
     };
 });

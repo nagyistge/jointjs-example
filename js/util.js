@@ -44,7 +44,7 @@ define(['joint'], function (joint) {
         graph.current_id = Number.parseInt(graph.current_id);
     }
 
-    function convertIdeJsonToServerJson(ideJson, graph, paper) {
+    function convertIdeJsonToServerJson(ideJson, paper) {
         var serverJson = '';
         if (!ideJson) return serverJson;
 

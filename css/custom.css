@@ -20,8 +20,6 @@
     background: #7B3A3A;
     width: 210px;
     height: 600px;
-    /*display: table-cell;*/
-
     border: 1px solid gray;
     overflow: hidden;
 }
@@ -39,7 +37,6 @@
 }
 
 form textarea {
-    /*margin-left: 10px;*/
     height: 330px;
     width: 270px;
 }
