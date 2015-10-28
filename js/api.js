@@ -62,8 +62,14 @@ define(['joint', 'fs', 'util'],
             }
 
             function convertToServerJson() {
-                var ideJson = $('#log').val();
-                var serverJson = util.convertIdeJsonToServerJson(ideJson, paper);
+                var $log = $('#log');
+                var json = $log.val();
+                if (!json) {
+                    json = JSON.stringify(drawControls.graph, null, 4);
+                    $log.val(json);
+                }
+
+                var serverJson = util.convertIdeJsonToServerJson(json, paper);
                 $('#server_log').val(serverJson);
             }
 
@@ -121,8 +127,6 @@ define(['joint', 'fs', 'util'],
                 }
 
                 // 3 add extra fields and send to server (server json)
-
-
                 var server_key = $('#server_metadata_name').val();
                 if (serverJson) {
                     postData(
@@ -142,8 +146,8 @@ define(['joint', 'fs', 'util'],
                     postData(
                         client_key,
                         JSON.stringify(jsonData, null, 4),
-                        'success send data (server json)',
-                        'error send data (server json). See console for detail');
+                        'success send data (client json)',
+                        'error send data (client json). See console for detail');
                 }
             }
 

@@ -44,12 +44,23 @@ define(['joint'], function (joint) {
         graph.current_id = Number.parseInt(graph.current_id);
     }
 
-    function convertIdeJsonToServerJson(ideJson, paper) {
-        var serverJson = '';
-        if (!ideJson) return serverJson;
-        if (!paper._views || Object.keys(paper._views).length <= 0) return serverJson;
+    function isPaperEmpty(paper) {
+        return !paper._views || Object.keys(paper._views).length <= 0;
+    }
 
-        // rules for filtering json keywords
+    function convertIdeJsonToServerJson(json, paper) {
+        // 0 init
+        var serverObjects = { cells: []};
+        var serverJson = JSON.stringify(serverObjects, null, 4);
+
+        // 1 check if empty
+        if (!json) return serverJson;
+        if (isPaperEmpty(paper)) {
+            console.log('Can not convert ide json to server json because of paper (no visual elements) is empty!')
+            return serverJson;
+        }
+
+        // 2 set rules for filtering json keywords
         var rules = [
             "type", "inPorts", "outPorts", "id",
             {
@@ -81,17 +92,18 @@ define(['joint'], function (joint) {
             })[0];
         }
 
-        var ideObjects = JSON.parse(ideJson);
-        var serverObjects = { cells: []};
+        var ideObjects = JSON.parse(json);
         var cells = ideObjects.cells;
-        var cell, serverCell;
+        var cell,
+            serverCell;
 
+        // 3 start loop by cell
         for(var i = 0; i < cells.length; i++) {
 
             cell = cells[i];
             serverCell = {};
 
-            // every property of cell
+            // loop by property of cell
             for(var prop in cell) {
                 if (!cell.hasOwnProperty(prop) ||
                     keywords.indexOf(prop) < 0) {
@@ -100,6 +112,7 @@ define(['joint'], function (joint) {
 
                 var innerCell = cell[prop];
 
+                // 4 if found attrts => get custom_attrs if exists
                 if (prop === 'attrs') {
                     var key = getInnerProps(prop);
                     var custom_attrs = cell[prop][key];
@@ -109,13 +122,13 @@ define(['joint'], function (joint) {
                     continue;
                 }
 
-                // get text instead of type (text we could setup)
+                // 5 if found type => get text (text we could setup)
                 if (prop === 'type' && cell['attrs']['text']) {
                     serverCell[prop] = cell['attrs']['text']['text'];
                     continue;
                 }
 
-                // find by selector port name
+                // 6 if found type = link => get port by selector
                 if ((~['source', 'target'].indexOf(prop)) && cell['type'] === 'link') {
                     var id = cell[prop].id;
                     var selector = cell[prop].selector;
@@ -130,16 +143,18 @@ define(['joint'], function (joint) {
                     continue;
                 }
 
+                // 7 simple property (not object)
                 if (!(innerCell instanceof Object)) {
                     serverCell[prop] = cell[prop];
                 }
+                // 8 property object (dict)
                 else {
                     var innerProps = getInnerProps(prop);
-                    // take full  value (example "outPorts")
+                    // 9 if not exists rule => get full value (example "outPorts")
                     if (!innerProps || innerProps.length == 0) {
                         serverCell[prop] = innerCell;
                     }
-                    // filter by rules
+                    // 10 if exists rule => filtering
                     else {
                         for (var innerProp in innerCell) {
                             if (!innerCell.hasOwnProperty(innerProp) ||
@@ -157,6 +172,7 @@ define(['joint'], function (joint) {
                 }
             }
 
+            // 11 if not created attrs => add empty default value
             if (!~Object.keys(serverCell).indexOf('attrs')) {
                 serverCell['attrs'] = {};
             }

@@ -36,22 +36,21 @@ require(['joint',
         // 2 init paper for drawing
         drawControls = paper.init(joint, drawGraph);
 
-        //dragControls.graph.on('all', function(eventName, cell) {
-        //    console.log(arguments);
-        //});
-        //drawGraph.on('all', function(eventName, cell) {
-        //    console.log(arguments);
-        //});
-
-        // 3 init paper events for resizing
+        // 3 init paper events for selectable (resizing, deleting)
         editable.init(joint, drawControls.graph, drawControls.paper);
 
         // 4 init controls
         init.initControls(dragControls.graph, dragControls.paper, shapeHtml);
 
-        // - init all controls shema for visual testing
-        //init.initMainControls(devs.graph);
-
         // 5 api
         api.init(drawControls.graph, drawControls.paper);
     });
+
+
+//dragControls.graph.on('all', function(eventName, cell) {
+//    console.log(arguments);
+//});
+//drawGraph.on('all', function(eventName, cell) {
+//    console.log(arguments);
+//});
+
