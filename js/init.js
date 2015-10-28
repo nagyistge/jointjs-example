@@ -130,10 +130,24 @@ define(['joint', 'joint.shapes.devs'], function (joint, Shapes) {
             }
         });
 
+        //var block_divide = new Shapes.Atomic({
+        //    position: {x: 45, y: 245},
+        //    size: {width: 100, height: 50},
+        //    inPorts: ['a', 'b'],
+        //    outPorts: ['out'],
+        //    attrs: {
+        //        text: {text: 'block_divide'},
+        //        custom_attrs: {
+        //            output_type:'int',
+        //            b:1000
+        //        }
+        //    }
+        //});
+
         var block_divide = new Shapes.Atomic({
             position: {x: 45, y: 245},
             size: {width: 100, height: 50},
-            inPorts: ['a', 'b'],
+            inPorts: ['c', 'd'],
             outPorts: ['out'],
             attrs: {
                 text: {text: 'block_divide'},

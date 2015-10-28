@@ -52,6 +52,11 @@ define(['joint', 'fs', 'util'],
                         var $log = $('#log');
                         $log.val('');
                         $log.val(JSON.stringify(JSON.parse(response), null, 4));
+                        alert('success get data');
+                    },
+                    error: function (error) {
+                        alert('error get data');
+                        console.log('server json get data, response:', error);
                     }
                 });
             }
@@ -60,6 +65,39 @@ define(['joint', 'fs', 'util'],
                 var ideJson = $('#log').val();
                 var serverJson = util.convertIdeJsonToServerJson(ideJson, paper);
                 $('#server_log').val(serverJson);
+            }
+
+            function postData(key, metadata, msgSuccess, msgError) {
+                var post_url = $('#post_url').val();
+                var data = {
+                    data: [
+                        {
+                            "key": key,
+                            "metadata": metadata
+                        }
+                    ]
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: post_url,
+                    data: data,
+                    crossDomain: true,
+                    success: function (response) {
+                        if (response.result === 'SUCCESS') {
+                            alert(msgSuccess);
+                        }
+                        else {
+                            alert(msgError);
+                        }
+                        console.log(key + ' response:', response);
+                    },
+                    error: function (error) {
+                        alert(msgError);
+                        console.log(key + ' response:', error);
+                    },
+                    dataType: 'json'
+                });
             }
 
             function sendJsonToServer() {
@@ -83,28 +121,15 @@ define(['joint', 'fs', 'util'],
                 }
 
                 // 3 add extra fields and send to server (server json)
-                var post_url = $('#post_url').val();
+
+
                 var server_key = $('#server_metadata_name').val();
                 if (serverJson) {
-                    var serverData = {
-                        data: [
-                            {
-                                "key": server_key,
-                                "metadata": JSON.stringify(JSON.parse(serverJson), null, 4)
-                            }
-                        ]
-                    };
-
-                    $.ajax({
-                        type: "POST",
-                        url: post_url,
-                        data: serverData,
-                        crossDomain: true,
-                        success: function (response) {
-                            console.log('server json sent data, response:', response);
-                        },
-                        dataType: 'json'
-                    });
+                    postData(
+                        server_key,
+                        JSON.stringify(JSON.parse(serverJson), null, 4),
+                        'success send data (server json)',
+                        'error send data (server json). See console for detail');
                 }
 
                 // 4 add extra fields and send to server (client json)
@@ -114,25 +139,11 @@ define(['joint', 'fs', 'util'],
                         return;
 
                     var client_key = $('#client_metadata_name').val();
-                    var data = {
-                        data: [
-                            {
-                                "key": client_key,
-                                "metadata": JSON.stringify(jsonData, null, 4)
-                            }
-                        ]
-                    };
-
-                    $.ajax({
-                        type: "POST",
-                        url: post_url,
-                        data: data,
-                        crossDomain: true,
-                        success: function (response) {
-                            console.log('client json sent data, response:', response);
-                        },
-                        dataType: 'json'
-                    });
+                    postData(
+                        client_key,
+                        JSON.stringify(jsonData, null, 4),
+                        'success send data (server json)',
+                        'error send data (server json). See console for detail');
                 }
             }
 
