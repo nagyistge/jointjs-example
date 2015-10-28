@@ -47,6 +47,7 @@ define(['joint'], function (joint) {
     function convertIdeJsonToServerJson(ideJson, paper) {
         var serverJson = '';
         if (!ideJson) return serverJson;
+        if (!paper._views || Object.keys(paper._views).length <= 0) return serverJson;
 
         // rules for filtering json keywords
         var rules = [

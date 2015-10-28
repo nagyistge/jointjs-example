@@ -82,6 +82,7 @@ define(['jquery',
                     lastCellView.$htmlBox = cellView.$htmlBox.parent();
                     lastCellView.$htmlBox.prepend($(delete_button_template));
                     lastCellView.htmlElement= true;
+                    form.addFormControls(lastCellView);
                 }
                 // 3.2 SVG element
                 else {

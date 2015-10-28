@@ -13,27 +13,34 @@ define(['joint'], function (joint) {
         var $text_input = $(input);
         $text_input.val(JSON.stringify(localCellView.model.attr('custom_attrs'), null, 4));
 
-        form.append('<span> Custom attributes:<br></span>')
+        form.append('<span> Custom attributes (enter valid json):<br></span>')
         form.append($text_input)
         form.append('<br><input type="submit" value="Submit">');
 
         // 3 saving
         form.find('input[type=submit]').click(function () {
-            localCellView.model.attr('custom_attrs', JSON.parse($text_input.val()));
+            var data = null;
+            try {
+                data = JSON.parse($text_input.val());
+            }
+            catch(ex) {
+                alert('not valid json:' + ex);
+                return;
+            }
+            localCellView.model.attr('custom_attrs', data);
             localCellView = null;
             form.empty();
         });
 
         // 4 hide form
-        $('#attrs').blur(function () {
-            var form = $('form');
+        form.blur(function () {
             form.empty();
         });
     }
 
     function hideForm() {
-        if (!$('#attrs').is(":focus")) {
-            var form = $('form');
+        var form = $('form');
+        if (!form.find('input, textarea').is(':focus')) {
             form.empty();
         }
     }

@@ -81,48 +81,55 @@ define(['joint', 'fs', 'util'],
                     $log.val(json);
                 }
 
-                // 3 add extra fields
-                var serverData = {
-                    data: [
-                        {
-                            "key": "ide_server",
-                            "metadata": JSON.stringify(JSON.parse(serverJson), null, 4)
-                        }
-                    ]
-                };
+                // 3 add extra fields and send to server (server json)
+                if (serverJson) {
+                    var serverData = {
+                        data: [
+                            {
+                                "key": "ide_server",
+                                "metadata": JSON.stringify(JSON.parse(serverJson), null, 4)
+                            }
+                        ]
+                    };
 
-                var data = {
-                    data: [
-                        {
-                            "key": "ide_client",
-                            "metadata": JSON.stringify(JSON.parse(json), null, 4)
-                        }
-                    ]
-                };
+                    $.ajax({
+                        type: "POST",
+                        url: 'http://localhost:8888/setMetaData',
+                        data: serverData,
+                        crossDomain: true,
+                        success: function (response) {
+                            console.log('server json sent data, response:', response);
+                        },
+                        dataType: 'json'
+                    });
+                }
 
-                // 4 send json
-                $.ajax({
-                    type: "POST",
-                    url: 'http://localhost:8888/setMetaData',
-                    data: serverData,
-                    crossDomain: true,
-                    success: function (response) {
-                        console.log('server json sent data, response:', response);
-                    },
-                    dataType: 'json'
-                });
+                // 4 add extra fields and send to server (client json)
+                if (json) {
+                    var jsonData = JSON.parse(json);
+                    if (jsonData.cells.length == 0)
+                        return;
 
-                // 5 send original json
-                $.ajax({
-                    type: "POST",
-                    url: 'http://localhost:8888/setMetaData',
-                    data: data,
-                    crossDomain: true,
-                    success: function (response) {
-                        console.log('client json sent data, response:', response);
-                    },
-                    dataType: 'json'
-                });
+                    var data = {
+                        data: [
+                            {
+                                "key": "ide_client",
+                                "metadata": JSON.stringify(jsonData, null, 4)
+                            }
+                        ]
+                    };
+
+                    $.ajax({
+                        type: "POST",
+                        url: 'http://localhost:8888/setMetaData',
+                        data: data,
+                        crossDomain: true,
+                        success: function (response) {
+                            console.log('client json sent data, response:', response);
+                        },
+                        dataType: 'json'
+                    });
+                }
             }
 
             $('#btn_to_json').click(exportToJson);
