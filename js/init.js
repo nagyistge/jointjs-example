@@ -109,7 +109,7 @@ define(['joint', 'joint.shapes.devs', 'const'], function (joint, Shapes, lugCons
         });
 
         var block_adc = new Shapes.Atomic({
-            position: {x: 85, y: 365},
+            position: {x: 45, y: 365},
             size: {width: 120, height: 50},
             outPorts: ["out"],
             attrs: {
