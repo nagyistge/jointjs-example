@@ -102,7 +102,7 @@ define(['joint', 'joint.shapes.devs', 'const'], function (joint, Shapes, lugCons
             attrs: {
                 text: {text: 'block_http_post'},
                 custom_attrs: {
-                    "url": "http://lug.pp.ciklum.com:8080/api/setData",
+                    "url": "http://lug.pp.ciklum.com",
                     "period": 500
                 }
             }
