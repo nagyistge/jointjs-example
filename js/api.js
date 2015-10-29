@@ -38,6 +38,7 @@ define(['joint', 'fs', 'util', 'const'],
                 var get_url = $('#get_url').val() + $(lugConst.$IDE_METADATA_KEY).val();
                 var dataType = window.lug_ide.data === lugConst.DATA_JSONP ? 'jsonp' : 'json';
                 var jsonpCallback = window.lug_ide.data === lugConst.DATA_JSONP ? 'callback' : undefined;
+
                 $.ajax({
                     //url: "http://localhost:8888/getMetaData?key=goal3_led",
                     url: get_url,
@@ -53,7 +54,8 @@ define(['joint', 'fs', 'util', 'const'],
                     success: function (response) {
                         var $log = $('#log');
                         $log.val('');
-                        $log.val(JSON.stringify(JSON.parse(response), null, 4));
+                        var beatyData = JSON.stringify(JSON.parse(JSON.stringify(response)), null, 4);
+                        $log.val(beatyData);
                         alert('success get data');
                         if (callback && typeof callback === 'function') callback();
                     },
