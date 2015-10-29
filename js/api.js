@@ -100,14 +100,14 @@ define(['joint', 'fs', 'util', 'const'],
                     data: JSON.stringify(data),
                     crossDomain: crossDomain,
                     contentType: "application/json",
-                    complete: function(response) {
-                        if (response.result === 'SUCCESS') {
+                    complete: function(data) {
+                        if (data.responseJSON && data.responseJSON && data.responseJSON.result === 'SUCCESS') {
                             alert(msgSuccess);
                         }
                         else {
                             alert(msgError);
                         }
-                        console.log(key + ' response:', response);
+                        console.log(key + ' response:', data.responseJSON);
                     }
                 });
 
