@@ -1,5 +1,5 @@
-define(['joint', 'fs', 'util'],
-    function (joint, fs, util) {
+define(['joint', 'fs', 'util', 'const'],
+    function (joint, fs, util, lugConst) {
 
         function init(graph, paper) {
 
@@ -35,17 +35,19 @@ define(['joint', 'fs', 'util'],
             }
 
             function getJsonFromServer() {
-                var get_url = $('#get_url').val();
+                var get_url = $('#get_url').val() + $(lugConst.$IDE_METADATA_KEY).val();
+                var dataType = window.lug_ide.data === lugConst.DATA_JSONP ? 'jsonp' : 'json';
+                var jsonpCallback = window.lug_ide.data === lugConst.DATA_JSONP ? 'callback' : undefined;
                 $.ajax({
                     //url: "http://localhost:8888/getMetaData?key=goal3_led",
                     url: get_url,
                     //url: "http://localhost:8888/getMetaData?key=ide_server",
                     //url: "http://lug.pp.ciklum.com:8080/api/getMetadata?key=goal3_led",
                     // The name of the callback parameter, as specified by the YQL service
-                    jsonp: "callback",
+                    jsonp: jsonpCallback,
 
                     // Tell jQuery we're expecting JSONP
-                    dataType: "jsonp",
+                    dataType: dataType,
 
                     // Work with the response
                     success: function (response) {
@@ -84,11 +86,13 @@ define(['joint', 'fs', 'util'],
                     ]
                 };
 
+                var crossDomain = window.lug_ide.mode !== lugConst.MODE_DEMO ? true : false;
+
                 $.ajax({
                     type: "POST",
                     url: post_url,
                     data: data,
-                    crossDomain: true,
+                    crossDomain: crossDomain,
                     success: function (response) {
                         if (response.result === 'SUCCESS') {
                             alert(msgSuccess);
@@ -127,7 +131,7 @@ define(['joint', 'fs', 'util'],
                 }
 
                 // 3 add extra fields and send to server (server json)
-                var server_key = $('#application_metadata_key').val();
+                var server_key = $(lugConst.$APP_METADATA_KEY).val();
                 if (serverJson) {
                     postData(
                         server_key,
@@ -142,7 +146,7 @@ define(['joint', 'fs', 'util'],
                     if (jsonData.cells.length == 0)
                         return;
 
-                    var client_key = $('#ide_metadata_key').val();
+                    var client_key = $(lugConst.$IDE_METADATA_KEY).val();
                     postData(
                         client_key,
                         JSON.stringify(jsonData, null, 4),
@@ -158,6 +162,20 @@ define(['joint', 'fs', 'util'],
             $('#btn_from_json_server').click(getJsonFromServer);
             $('#btn_to_json_server').click(convertToServerJson);
             $('#btn_to_json_server_send').click(sendJsonToServer);
+
+            function deploy() {
+                clearLog();
+                sendJsonToServer();
+            }
+
+            function load() {
+                clearLog();
+                getJsonFromServer();
+                exportFromJson();
+            }
+
+            $('#btn_deploy').click(deploy);
+            $('#btn_load').click(load);
         }
 
         return {

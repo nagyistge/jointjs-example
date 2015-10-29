@@ -1,4 +1,4 @@
-define(['joint', 'joint.shapes.devs'], function (joint, Shapes) {
+define(['joint', 'joint.shapes.devs', 'const'], function (joint, Shapes, lugConst) {
     function initControls(graph, paper, HtmlShapes) {
         //var c1 = new Shapes.Coupled({
         //    position: {x: 45, y: 5},
@@ -118,16 +118,68 @@ define(['joint', 'joint.shapes.devs'], function (joint, Shapes) {
         graph.addCells([can_rx, in2, block_divide, can_tx, block_pwm_gpio, html, block_http_post]);
     }
 
+    function loadUrlParams() {
+        var hash = location.hash;
+        var items = hash.split('&');
+        if (!items || items.length === 0) return;
+
+        var values = {};
+        items.forEach(function (item) {
+            var kv = item.split('=');
+            values[kv[0].replace('#', '')] = kv[1];
+        });
+
+        window.lug_ide = window.lug_ide || {};
+        window.lug_ide.mode = values[lugConst.MODE];
+        window.lug_ide.data = values[lugConst.DATA];
+
+        console.log(window.lug_ide);
+
+        if (window.lug_ide.mode === lugConst.MODE_DEMO) {
+            $('#get_url').val(lugConst.URL_GET_DEMO);
+            $('#post_url').val(lugConst.URL_POST_DEMO);
+        }
+        else {
+            $('#get_url').val(lugConst.URL_GET_DEV);
+            $('#post_url').val(lugConst.URL_POST_DEV);
+        }
+
+        redrawLayout();
+    }
+
+    function redrawLayout() {
+        var demo = ['btn_deploy', 'btn_load'];
+        var dev = ['btn_to_json', 'btn_from_json',
+            'btn_from_json_server', 'btn_to_json_server_send',
+            'btn_to_json_server', 'btn_save_to_json_file', 'btn_clear_log'];
+
+        demo.forEach(function (item) {
+            if (window.lug_ide.mode === lugConst.MODE_DEMO)
+                $('#' + item).show();
+            else
+                $('#' + item).hide();
+        })
+        dev.forEach(function (item) {
+            if (window.lug_ide.mode === lugConst.MODE_DEMO)
+                $('#' + item).hide();
+            else
+                $('#' + item).show();
+        })
+    }
+
     function initFields() {
-        //$('#ide_metadata_key').change(function() {
-        //    console.log('sdas');
-        //    console.log($('#ide_metadata_key').val());
-        //    console.log($(this).val());
-        //});
-        $('#ide_metadata_key').val('ide_metadata_key');
-        $('#application_metadata_key').val('ide_server');
-        $('#get_url').val('http://localhost:8888/getMetaData?key=ide_client');
-        $('#post_url').val('http://localhost:8888/setMetaData');
+        var $server_key = $(lugConst.$APP_METADATA_KEY);
+        var $ide_key = $(lugConst.$IDE_METADATA_KEY);
+
+        $ide_key.on('change keyup paste', function () {
+            $server_key.val($(this).val().replace('ide_', ''));
+        });
+
+        $ide_key.val(lugConst.IDE_METADATA_KEY);
+        $server_key.val(lugConst.APP_METADATA_KEY);
+
+        loadUrlParams();
+        $(window).on('hashchange', loadUrlParams);
     }
 
     return {
