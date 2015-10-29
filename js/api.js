@@ -11,7 +11,7 @@ define(['joint', 'fs', 'util', 'const'],
                 $('#log').val(json);
             }
 
-            function exportFromJson() {
+            function importFromJson() {
                 var json = $('#log').val();
                 if (!json) {
                     console.log('empty log field. Please insert JSON in log!');
@@ -34,7 +34,7 @@ define(['joint', 'fs', 'util', 'const'],
                 window.saveAs(blob, 'ide.txt');
             }
 
-            function getJsonFromServer() {
+            function getJsonFromServer(callback) {
                 var get_url = $('#get_url').val() + $(lugConst.$IDE_METADATA_KEY).val();
                 var dataType = window.lug_ide.data === lugConst.DATA_JSONP ? 'jsonp' : 'json';
                 var jsonpCallback = window.lug_ide.data === lugConst.DATA_JSONP ? 'callback' : undefined;
@@ -55,6 +55,7 @@ define(['joint', 'fs', 'util', 'const'],
                         $log.val('');
                         $log.val(JSON.stringify(JSON.parse(response), null, 4));
                         alert('success get data');
+                        if (callback) callback();
                     },
                     error: function (error) {
                         alert('error get data');
@@ -156,7 +157,7 @@ define(['joint', 'fs', 'util', 'const'],
             }
 
             $('#btn_to_json').click(exportToJson);
-            $('#btn_from_json').click(exportFromJson);
+            $('#btn_from_json').click(importFromJson);
             $('#btn_clear_log').click(clearLog);
             $('#btn_save_to_json_file').click(saveToJsonFile);
             $('#btn_from_json_server').click(getJsonFromServer);
@@ -170,8 +171,7 @@ define(['joint', 'fs', 'util', 'const'],
 
             function load() {
                 clearLog();
-                getJsonFromServer();
-                exportFromJson();
+                getJsonFromServer(importFromJson);
             }
 
             $('#btn_deploy').click(deploy);
