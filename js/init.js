@@ -97,8 +97,8 @@ define(['joint', 'joint.shapes.devs', 'const'], function (joint, Shapes, lugCons
 
         var block_http_post = new Shapes.Atomic({
             position: {x: 85, y: 305},
-            size: {width: 120, height: 50},
-            inPorts: ["led_pwm"],
+            size: {width: 125, height: 50},
+            inPorts: ["led_pwm", "adc_value"],
             attrs: {
                 text: {text: 'block_http_post'},
                 custom_attrs: {
@@ -108,14 +108,23 @@ define(['joint', 'joint.shapes.devs', 'const'], function (joint, Shapes, lugCons
             }
         });
 
+        var block_adc = new Shapes.Atomic({
+            position: {x: 85, y: 365},
+            size: {width: 120, height: 50},
+            inPorts: ["out"],
+            attrs: {
+                text: {text: 'block_adc'},
+            }
+        });
+
         var html = new HtmlShapes.Element({
-            position: {x: 15, y: 365},
+            position: {x: 15, y: 425},
             size: {width: 170, height: 100},
             label: 'I am HTML',
             select: 'one'
         });
 
-        graph.addCells([can_rx, in2, block_divide, can_tx, block_pwm_gpio, html, block_http_post]);
+        graph.addCells([can_rx, in2, block_divide, can_tx, block_pwm_gpio, html, block_http_post, block_adc]);
     }
 
     function loadUrlParams() {

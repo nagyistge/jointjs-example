@@ -17,7 +17,7 @@
 #paperControls {
     position: relative;
     background: #7B3A3A;
-    width: 210px;
+    width: 220px;
     height: 600px;
     border: 1px solid gray;
     overflow: hidden;
@@ -103,7 +103,7 @@ form * {
 
 /*table layout*/
 .column-left {
-    width: 210px;
+    width: 220px;
     left: 0;
     background: lightgray;
     position: absolute;
@@ -111,7 +111,7 @@ form * {
 .column-center {
     width: 690px;
     /*background: grey;*/
-    margin-left: 210px;
+    margin-left: 220px;
     position: absolute;
 }
 .column-right {
