@@ -136,7 +136,7 @@ define(['joint', 'fs', 'util', 'const'],
                 if (serverJson) {
                     postData(
                         server_key,
-                        JSON.stringify(JSON.parse(serverJson), null, 4),
+                        JSON.parse(serverJson), //JSON.stringify(JSON.parse(serverJson), null, 4),
                         'success send data (server json)',
                         'error send data (server json). See console for detail');
                 }
@@ -150,7 +150,7 @@ define(['joint', 'fs', 'util', 'const'],
                     var client_key = $(lugConst.$IDE_METADATA_KEY).val();
                     postData(
                         client_key,
-                        JSON.stringify(jsonData, null, 4),
+                        jsonData, //JSON.stringify(jsonData, null, 4),
                         'success send data (client json)',
                         'error send data (client json). See console for detail');
                 }
