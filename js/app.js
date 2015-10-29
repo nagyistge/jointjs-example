@@ -10,8 +10,7 @@ require(['joint',
         'joint.shapes.html',
         'init',
         'api',
-        'style!layout/devs',
-        'style!layout/custom'
+        'style!layout/devs'
     ],
     function (joint,
               css_join,

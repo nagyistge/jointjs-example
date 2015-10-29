@@ -55,7 +55,7 @@ define(['joint', 'fs', 'util', 'const'],
                         $log.val('');
                         $log.val(JSON.stringify(JSON.parse(response), null, 4));
                         alert('success get data');
-                        if (callback) callback();
+                        if (callback && typeof callback === 'function') callback();
                     },
                     error: function (error) {
                         alert('error get data');

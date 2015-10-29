@@ -144,13 +144,13 @@ define(['joint', 'joint.shapes.devs', 'const'], function (joint, Shapes, lugCons
 
         console.log(window.lug_ide);
 
-        if (window.lug_ide.mode === lugConst.MODE_DEMO) {
-            $('#get_url').val(lugConst.URL_GET_DEMO);
-            $('#post_url').val(lugConst.URL_POST_DEMO);
-        }
-        else {
+        if (window.lug_ide.mode === lugConst.MODE_DEVELOPMENT) {
             $('#get_url').val(lugConst.URL_GET_DEV);
             $('#post_url').val(lugConst.URL_POST_DEV);
+        }
+        else {
+            $('#get_url').val(lugConst.URL_GET_DEMO);
+            $('#post_url').val(lugConst.URL_POST_DEMO);
         }
 
         redrawLayout();
@@ -163,16 +163,16 @@ define(['joint', 'joint.shapes.devs', 'const'], function (joint, Shapes, lugCons
             'btn_to_json_server', 'btn_save_to_json_file', 'btn_clear_log'];
 
         demo.forEach(function (item) {
-            if (window.lug_ide.mode === lugConst.MODE_DEMO)
-                $('#' + item).show();
-            else
+            if (window.lug_ide.mode === lugConst.MODE_DEVELOPMENT)
                 $('#' + item).hide();
+            else
+                $('#' + item).show();
         })
         dev.forEach(function (item) {
-            if (window.lug_ide.mode === lugConst.MODE_DEMO)
-                $('#' + item).hide();
-            else
+            if (window.lug_ide.mode === lugConst.MODE_DEVELOPMENT)
                 $('#' + item).show();
+            else
+                $('#' + item).hide();
         })
     }
 
