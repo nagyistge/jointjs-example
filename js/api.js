@@ -54,7 +54,10 @@ define(['joint', 'fs', 'util', 'const'],
                     success: function (response) {
                         var $log = $('#log');
                         $log.val('');
-                        var beatyData = JSON.stringify(JSON.parse(JSON.stringify(response)), null, 4);
+                        //var beatyData = JSON.stringify(response, null, 4);
+                        //var beatyData = JSON.stringify(JSON.parse(JSON.stringify(response)), null, 4);
+                        var beatyData = JSON.stringify(JSON.parse(response), null, 4);
+
                         $log.val(beatyData);
                         alert('success get data');
                         if (callback && typeof callback === 'function') callback();
@@ -94,7 +97,7 @@ define(['joint', 'fs', 'util', 'const'],
                 $.ajax({
                     type: "POST",
                     url: post_url,
-                    data: data,
+                    data: JSON.parse(JSON.stringify(data, null, 4)),
                     crossDomain: crossDomain,
                     success: function (response) {
                         if (response.result === 'SUCCESS') {
@@ -138,7 +141,8 @@ define(['joint', 'fs', 'util', 'const'],
                 if (serverJson) {
                     postData(
                         server_key,
-                        JSON.parse(serverJson), //JSON.stringify(JSON.parse(serverJson), null, 4),
+                        //JSON.parse(serverJson),
+                        JSON.stringify(JSON.parse(serverJson), null, 4),
                         'success send data (server json)',
                         'error send data (server json). See console for detail');
                 }
@@ -152,7 +156,8 @@ define(['joint', 'fs', 'util', 'const'],
                     var client_key = $(lugConst.$IDE_METADATA_KEY).val();
                     postData(
                         client_key,
-                        jsonData, //JSON.stringify(jsonData, null, 4),
+                        //jsonData,
+                        JSON.stringify(jsonData, null, 4),
                         'success send data (client json)',
                         'error send data (client json). See console for detail');
                 }
