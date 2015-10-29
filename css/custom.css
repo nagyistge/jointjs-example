@@ -1,3 +1,4 @@
+/*papers*/
 #paper {
     position: relative;
     background: lightgray;
@@ -7,14 +8,12 @@
     overflow: hidden;
     display: inline-block;
 }
-
 #paper svg {
     background: transparent;
 }
 #paper svg .link {
     z-index: 2;
 }
-
 #paperControls {
     position: relative;
     background: #7B3A3A;
@@ -23,7 +22,6 @@
     border: 1px solid gray;
     overflow: hidden;
 }
-
 #paperControls svg {
     background: transparent;
 }
@@ -31,50 +29,69 @@
     z-index: 2;
 }
 
+/*form*/
 #form {
     color: #7c68fc;
     height: 400px;
 }
-
 form textarea {
     height: 330px;
     width: 270px;
 }
-
 form * {
     margin-left: 10px;
 }
 
+/*table container*/
 .container {
     position: relative;
     width: 800px;
 }
-
 .container > div {
-    height: 400px;
+    /*height: 400px;*/
 }
-
 .container .button-container {
     height: 202px;
     background: #949494;
 }
-
 .container .button-container button {
     margin-left: 5px;
     margin-top: 5px;
 }
 
+/* header */
+.container .header {
+    width: 1100px;
+    margin-bottom: 5px;
+}
+.container .header span:nth-child(-2n + 1) {
+    padding-right:430px;
+}
+.container .header span:nth-child(-2n + 2) {
+    padding-right:383px;
+}
+.container .header input {
+    width: 543px;
+}
+
+/*footer*/
+.container .footer span:nth-child(-n + 1) {
+    padding-right:490px;
+}
+.container .footer span:nth-child(-2n + 2) {
+    padding-right:442px;
+}
 .container .footer {
     margin-top: 610px;
     position: absolute;
     width: 1100px;
 }
-
-
 .container .footer input {
     width: 543px;
 }
-
+.container .footer span:nth-child(n + 3) {
+    padding-right:500px;
+}
 .container .footer textarea {
     width: 535px;
     height: 500px;
@@ -84,32 +101,19 @@ form * {
     overflow:scroll;
 }
 
-.container .footer span:nth-child(-n + 2) {
-    padding-right:483px;
-}
-
-.container .footer span:nth-child(n + 3) {
-    padding-right:417px;
-}
-
-.container .footer span:nth-child(n + 8) {
-    padding-right:500px;
-}
-
+/*table layout*/
 .column-left {
     width: 210px;
     left: 0;
     background: lightgray;
     position: absolute;
 }
-
 .column-center {
     width: 690px;
-    background: grey;
+    /*background: grey;*/
     margin-left: 210px;
     position: absolute;
 }
-
 .column-right {
     margin-right: -400px;
     background: #7B3A3A;

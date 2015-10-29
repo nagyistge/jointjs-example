@@ -127,7 +127,7 @@ define(['joint', 'fs', 'util'],
                 }
 
                 // 3 add extra fields and send to server (server json)
-                var server_key = $('#server_metadata_name').val();
+                var server_key = $('#application_metadata_key').val();
                 if (serverJson) {
                     postData(
                         server_key,
@@ -142,7 +142,7 @@ define(['joint', 'fs', 'util'],
                     if (jsonData.cells.length == 0)
                         return;
 
-                    var client_key = $('#client_metadata_name').val();
+                    var client_key = $('#ide_metadata_key').val();
                     postData(
                         client_key,
                         JSON.stringify(jsonData, null, 4),

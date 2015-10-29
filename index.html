@@ -8,6 +8,12 @@
 <script data-main="js/main" src="vendors/js/require.js"></script>
 
 <div class="container">
+    <div class="header">
+        <span>IDE metadata key</span>
+        <span>Application metadata key</span>
+        <input type="text" id="ide_metadata_key">
+        <input type="text" id="application_metadata_key">
+    </div>
     <div class="column-center">
         <div id="paper" class="paper"></div>
     </div>
@@ -20,23 +26,31 @@
         </div>
         <div class="button-container">
             <button id="btn_to_json">Export to JSON (IDE)</button><br/>
-            <button id="btn_from_json">Export from JSON (IDE)</button><br/>
+            <button id="btn_from_json">Import from JSON (IDE)</button><br/>
             <button id="btn_from_json_server">Get JSON from server(IDE)</button><br/>
             <button id="btn_to_json_server_send">Send JSON to server (IDE and server)</button><br/>
-            <button id="btn_to_json_server">Convert to server json (IDE => server)</button><br/>
+            <button id="btn_to_json_server">Convert to application json (IDE => server)</button><br/>
             <button id="btn_save_to_json_file">Save JSON file (IDE)</button><br/>
             <button id="btn_clear_log">Clear JSON (IDE and server)</button><br/>
         </div>
     </div>
+
+    <!--
+    add 2 fields:
+        ide metadata key: ide_metadata_key insted of ide_client
+        application metadata key: metadata_key (remove ide from begin)
+        server url: http://lug.pp.ciklum.com/api/
+        set/get Metadata => d from small letter
+        add 2 buttons deploy load
+        add url value for deploy/production
+        add url value for json/jsonp
+    -->
+
     <div class="footer">
         <span>IDE json</span>
-        <span>Server json</span><br>
+        <span>Application json</span><br>
         <textarea id="log"></textarea>
         <textarea id="server_log"></textarea>
-        <span>Client metadata key</span>
-        <span>Server metadata key</span>
-        <input type="text" id="client_metadata_name">
-        <input type="text" id="server_metadata_name">
         <span>Get url</span>
         <span>Post url</span>
         <input type="text" id="get_url">
