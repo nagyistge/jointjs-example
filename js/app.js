@@ -23,8 +23,8 @@ require(['joint',
               api) {
 
         var drawGraph = new joint.dia.Graph;
-        drawGraph.current_id = 0;
-        drawGraph.max_id = 100;
+        drawGraph.currentId = 0;
+        drawGraph.maxId = 100;
 
         // 0 init fields
         init.initFields();

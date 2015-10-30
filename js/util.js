@@ -1,8 +1,8 @@
 define(['joint'], function (joint) {
     function getCurrentId(graph){
         var elements = graph.getElements();
-        if (!graph.current_id) {
-            graph.current_id = '0';
+        if (!graph.currentId) {
+            graph.currentId = '0';
         }
 
         if (elements.length > 0) {
@@ -12,36 +12,36 @@ define(['joint'], function (joint) {
                 })
                 .sort();
 
-            graph.current_id = ids[ids.length - 1];
+            graph.currentId = ids[ids.length - 1];
         }
 
-        return graph.current_id;
+        return graph.currentId;
     }
 
     function addZero(graph) {
         var zeroStr = "";
-        var zeroCount = graph.max_id.toString().length - graph.current_id.toString().length;
+        var zeroCount = graph.maxId.toString().length - graph.currentId.toString().length;
         while (zeroCount > 0) {
             zeroStr += "0";
             zeroCount--;
         }
 
-        graph.current_id = zeroStr + graph.current_id;
+        graph.currentId = zeroStr + graph.currentId;
     }
 
     function setId(graph, element){
-        if (graph.current_id < graph.max_id) {
-            graph.current_id++;
+        if (graph.currentId < graph.maxId) {
+            graph.currentId++;
         }
         else {
-            alert('max count: ' + graph.max_id + ' is riched!')
+            alert('max count: ' + graph.maxId + ' is riched!')
             return;
         }
 
         addZero(graph);
 
-        element.set('id', graph.current_id);
-        graph.current_id = Number.parseInt(graph.current_id);
+        element.set('id', graph.currentId);
+        graph.currentId = Number.parseInt(graph.currentId);
     }
 
     function isPaperEmpty(paper) {
@@ -115,9 +115,9 @@ define(['joint'], function (joint) {
                 // 4 if found attrts => get custom_attrs if exists
                 if (prop === 'attrs') {
                     var key = getInnerProps(prop);
-                    var custom_attrs = cell[prop][key];
-                    if (custom_attrs) {
-                        serverCell[prop] = custom_attrs;
+                    var customAttrs = cell[prop][key];
+                    if (customAttrs) {
+                        serverCell[prop] = customAttrs;
                     }
                     continue;
                 }

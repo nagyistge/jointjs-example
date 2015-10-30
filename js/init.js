@@ -128,8 +128,6 @@ define(['joint', 'joint.shapes.devs', 'const'], function (joint, Shapes, lugCons
         window.lugIDE.mode = values[lugConst.MODE];
         window.lugIDE.data = values[lugConst.DATA];
 
-        console.log(window.lugIDE);
-
         if (window.lugIDE.mode === lugConst.MODE_DEVELOPMENT) {
             $('#get_url').val(lugConst.URL_GET_DEV);
             $('#post_url').val(lugConst.URL_POST_DEV);

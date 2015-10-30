@@ -10,17 +10,17 @@ define(['joint'], function (joint) {
         form.empty();
 
         var input = '<textarea id="attrs" type="text"></textarea>';
-        var $text_input = $(input);
-        $text_input.val(JSON.stringify(localCellView.model.attr('custom_attrs'), null, 4));
+        var $input = $(input);
+        $input.val(JSON.stringify(localCellView.model.attr('custom_attrs'), null, 4));
 
         form.append('<span> Custom attributes (enter valid json):<br></span>')
-        form.append($text_input)
+        form.append($input)
         form.append('<br><input type="submit" value="Submit">');
 
         // 3 saving
         form.find('input[type=submit]').click(function () {
             try {
-                var attrs = JSON.parse($text_input.val());
+                var attrs = JSON.parse($input.val());
                 var attrsKey = Object.keys(attrs);
                 var attrsOld = localCellView.model.attr('custom_attrs');
                 var attrsDeleted = Object.keys(attrsOld).filter(function (item) {
