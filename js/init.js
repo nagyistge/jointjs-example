@@ -64,7 +64,7 @@ define(['joint', 'joint.shapes.devs', 'const'], function (joint, Shapes, lugCons
                 text: {text: 'block_divide'},
                 custom_attrs: {
                     output_type:'int',
-                    b:1000
+                    d:1000
                 }
             }
         });
