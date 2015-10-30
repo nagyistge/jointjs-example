@@ -30,12 +30,12 @@ define(['joint'], function (joint) {
                 attrsDeleted.forEach(function (item) {
                     localCellView.model.removeAttr('custom_attrs/' + item);
                 });
+                localCellView.model.attr('custom_attrs', attrs);
             }
             catch(ex) {
                 alert('not valid json:' + ex);
                 return;
             }
-            localCellView.model.attr('custom_attrs', attrs);
             localCellView = null;
             form.empty();
         });

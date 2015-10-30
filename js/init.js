@@ -139,10 +139,10 @@ define(['joint', 'joint.shapes.devs', 'const'], function (joint, Shapes, lugCons
             $('#post_url').val(lugConst.URL_POST_DEMO);
         }
 
-        redrawLayout();
+        refreshLayout();
     }
 
-    function redrawLayout() {
+    function refreshLayout() {
         var demo = ['btn_deploy', 'btn_load'];
         var dev = [
             'btn_to_json',
