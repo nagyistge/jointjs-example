@@ -155,16 +155,18 @@ define(['joint', 'joint.shapes.devs', 'const'], function (joint, Shapes, lugCons
         ];
 
         demo.forEach(function (item) {
-            if (window.lugIDE.mode === lugConst.MODE_DEVELOPMENT)
-                $('#' + item).hide();
-            else
-                $('#' + item).show();
+            if (window.lugIDE.mode === lugConst.MODE_DEVELOPMENT) {
+                $('#' + item).css('visibility', 'hidden');
+            } else {
+                $('#' + item).css('visibility', 'visible');
+            }
         });
         dev.forEach(function (item) {
-            if (window.lugIDE.mode === lugConst.MODE_DEVELOPMENT)
-                $('#' + item).show();
-            else
-                $('#' + item).hide();
+            if (window.lugIDE.mode === lugConst.MODE_DEVELOPMENT) {
+                $('#' + item).css('visibility', 'visible');
+            } else {
+                $('#' + item).css('visibility', 'hidden');
+            }
         });
     }
 
