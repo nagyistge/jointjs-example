@@ -35,15 +35,12 @@ define(['joint', 'fs', 'util', 'const'],
             }
 
             function getJsonFromServer(callback) {
-                var get_url = $('#get_url').val() + $(lugConst.$IDE_METADATA_KEY).val();
-                var dataType = window.lug_ide.data === lugConst.DATA_JSONP ? 'jsonp' : 'json';
-                var jsonpCallback = window.lug_ide.data === lugConst.DATA_JSONP ? 'callback' : undefined;
+                var getUrl = $('#get_url').val() + $(lugConst.$IDE_METADATA_KEY).val();
+                var dataType = window.lugIDE.data === lugConst.DATA_JSONP ? 'jsonp' : 'json';
+                var jsonpCallback = window.lugIDE.data === lugConst.DATA_JSONP ? 'callback' : undefined;
 
                 $.ajax({
-                    //url: "http://localhost:8888/getMetaData?key=goal3_led",
-                    url: get_url,
-                    //url: "http://localhost:8888/getMetaData?key=ide_server",
-                    //url: "http://lug.pp.ciklum.com:8080/api/getMetadata?key=goal3_led",
+                    url: getUrl,
                     // The name of the callback parameter, as specified by the YQL service
                     jsonp: jsonpCallback,
 
@@ -82,7 +79,7 @@ define(['joint', 'fs', 'util', 'const'],
             }
 
             function postData(key, metadata, msgSuccess, msgError) {
-                var post_url = $('#post_url').val();
+                var postUrl = $('#post_url').val();
                 var data = {
                     data: [
                         {
@@ -92,16 +89,18 @@ define(['joint', 'fs', 'util', 'const'],
                     ]
                 };
 
-                var crossDomain = window.lug_ide.mode !== lugConst.MODE_DEMO ? true : false;
+                var crossDomain = window.lugIDE.mode !== lugConst.MODE_DEMO ? true : false;
 
                 $.ajax({
-                    url: post_url,
+                    url: postUrl,
                     type: "POST",
                     data: JSON.stringify(data),
                     crossDomain: crossDomain,
                     contentType: "application/json",
                     complete: function(data) {
-                        if (data.responseJSON && data.responseJSON && data.responseJSON.result === 'SUCCESS') {
+                        if (data &&
+                            data.responseJSON &&
+                            data.responseJSON.result === 'SUCCESS') {
                             alert(msgSuccess);
                         }
                         else {
@@ -110,28 +109,6 @@ define(['joint', 'fs', 'util', 'const'],
                         console.log(key + ' response:', data.responseJSON);
                     }
                 });
-
-
-                //$.ajax({
-                //    type: "POST",
-                //    url: post_url,
-                //    data: JSON.parse(JSON.stringify(data, null, 4)),
-                //    crossDomain: crossDomain,
-                //    success: function (response) {
-                //        if (response.result === 'SUCCESS') {
-                //            alert(msgSuccess);
-                //        }
-                //        else {
-                //            alert(msgError);
-                //        }
-                //        console.log(key + ' response:', response);
-                //    },
-                //    error: function (error) {
-                //        alert(msgError);
-                //        console.log(key + ' response:', error);
-                //    },
-                //    dataType: 'json'
-                //});
             }
 
             function sendJsonToServer() {
@@ -155,10 +132,10 @@ define(['joint', 'fs', 'util', 'const'],
                 }
 
                 // 3 add extra fields and send to server (server json)
-                var server_key = $(lugConst.$APP_METADATA_KEY).val();
+                var serverKey = $(lugConst.$APP_METADATA_KEY).val();
                 if (serverJson) {
                     postData(
-                        server_key,
+                        serverKey,
                         JSON.parse(serverJson),
                         //JSON.stringify(JSON.parse(serverJson), null, 4),
                         'success send data (server json)',
@@ -171,9 +148,9 @@ define(['joint', 'fs', 'util', 'const'],
                     if (jsonData.cells.length == 0)
                         return;
 
-                    var client_key = $(lugConst.$IDE_METADATA_KEY).val();
+                    var clientKey = $(lugConst.$IDE_METADATA_KEY).val();
                     postData(
-                        client_key,
+                        clientKey,
                         jsonData,
                         //JSON.stringify(jsonData, null, 4),
                         'success send data (client json)',

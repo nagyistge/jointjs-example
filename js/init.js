@@ -41,20 +41,6 @@ define(['joint', 'joint.shapes.devs', 'const'], function (joint, Shapes, lugCons
             }
         });
 
-        //var block_divide = new Shapes.Atomic({
-        //    position: {x: 45, y: 245},
-        //    size: {width: 100, height: 50},
-        //    inPorts: ['a', 'b'],
-        //    outPorts: ['out'],
-        //    attrs: {
-        //        text: {text: 'block_divide'},
-        //        custom_attrs: {
-        //            output_type:'int',
-        //            b:1000
-        //        }
-        //    }
-        //});
-
         var block_divide = new Shapes.Atomic({
             position: {x: 45, y: 125},
             size: {width: 100, height: 50},
@@ -138,13 +124,13 @@ define(['joint', 'joint.shapes.devs', 'const'], function (joint, Shapes, lugCons
             values[kv[0].replace('#', '')] = kv[1];
         });
 
-        window.lug_ide = window.lug_ide || {};
-        window.lug_ide.mode = values[lugConst.MODE];
-        window.lug_ide.data = values[lugConst.DATA];
+        window.lugIDE = window.lugIDE || {};
+        window.lugIDE.mode = values[lugConst.MODE];
+        window.lugIDE.data = values[lugConst.DATA];
 
-        console.log(window.lug_ide);
+        console.log(window.lugIDE);
 
-        if (window.lug_ide.mode === lugConst.MODE_DEVELOPMENT) {
+        if (window.lugIDE.mode === lugConst.MODE_DEVELOPMENT) {
             $('#get_url').val(lugConst.URL_GET_DEV);
             $('#post_url').val(lugConst.URL_POST_DEV);
         }
@@ -158,34 +144,40 @@ define(['joint', 'joint.shapes.devs', 'const'], function (joint, Shapes, lugCons
 
     function redrawLayout() {
         var demo = ['btn_deploy', 'btn_load'];
-        var dev = ['btn_to_json', 'btn_from_json',
-            'btn_from_json_server', 'btn_to_json_server_send',
-            'btn_to_json_server', 'btn_save_to_json_file', 'btn_clear_log'];
+        var dev = [
+            'btn_to_json',
+            'btn_from_json',
+            'btn_from_json_server',
+            'btn_to_json_server_send',
+            'btn_to_json_server',
+            'btn_save_to_json_file',
+            'btn_clear_log'
+        ];
 
         demo.forEach(function (item) {
-            if (window.lug_ide.mode === lugConst.MODE_DEVELOPMENT)
+            if (window.lugIDE.mode === lugConst.MODE_DEVELOPMENT)
                 $('#' + item).hide();
             else
                 $('#' + item).show();
-        })
+        });
         dev.forEach(function (item) {
-            if (window.lug_ide.mode === lugConst.MODE_DEVELOPMENT)
+            if (window.lugIDE.mode === lugConst.MODE_DEVELOPMENT)
                 $('#' + item).show();
             else
                 $('#' + item).hide();
-        })
+        });
     }
 
     function initFields() {
-        var $server_key = $(lugConst.$APP_METADATA_KEY);
-        var $ide_key = $(lugConst.$IDE_METADATA_KEY);
+        var $serverKey = $(lugConst.$APP_METADATA_KEY);
+        var $ideKey = $(lugConst.$IDE_METADATA_KEY);
 
-        $ide_key.on('change keyup paste', function () {
-            $server_key.val($(this).val().replace('ide_', ''));
+        $ideKey.on('change keyup paste', function () {
+            $serverKey.val($(this).val().replace('ide_', ''));
         });
 
-        $ide_key.val(lugConst.IDE_METADATA_KEY);
-        $server_key.val(lugConst.APP_METADATA_KEY);
+        $ideKey.val(lugConst.IDE_METADATA_KEY);
+        $serverKey.val(lugConst.APP_METADATA_KEY);
 
         loadUrlParams();
         $(window).on('hashchange', loadUrlParams);
