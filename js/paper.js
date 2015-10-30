@@ -46,18 +46,6 @@ define(['util'], function (util) {
             markAvailable: true
         });
 
-        function addLink(cellView, magnetDOMElement) {
-            if (magnetDOMElement.getAttribute('port') === 'output') {
-                new joint.dia.Link({
-                    attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
-                })
-            } else {
-                new joint.dia.Link({
-                    attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
-                })
-            }
-        }
-
         /* rounded corners */
         /*
          _.each([c1,a1,a2,a3], function(element) {

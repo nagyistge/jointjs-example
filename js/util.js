@@ -145,7 +145,8 @@ define(['joint'], function (joint) {
 
                 // 7 simple property (not object)
                 if (!(innerCell instanceof Object)) {
-                    serverCell[prop] = cell[prop];
+                    // instead of link => Link
+                    serverCell[prop]  = cell[prop] === 'link' ? 'Link' : cell[prop];
                 }
                 // 8 property object (dict)
                 else {
