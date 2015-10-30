@@ -19,15 +19,23 @@ define(['joint'], function (joint) {
 
         // 3 saving
         form.find('input[type=submit]').click(function () {
-            var data = null;
             try {
-                data = JSON.parse($text_input.val());
+                var attrs = JSON.parse($text_input.val());
+                var attrsKey = Object.keys(attrs);
+                var attrsOld = localCellView.model.attr('custom_attrs');
+                var attrsDeleted = Object.keys(attrsOld).filter(function (item) {
+                    return !~attrsKey.indexOf(item);
+                });
+
+                attrsDeleted.forEach(function (item) {
+                    localCellView.model.removeAttr('custom_attrs/' + item);
+                });
             }
             catch(ex) {
                 alert('not valid json:' + ex);
                 return;
             }
-            localCellView.model.attr('custom_attrs', data);
+            localCellView.model.attr('custom_attrs', attrs);
             localCellView = null;
             form.empty();
         });
