@@ -7,7 +7,7 @@ require.config({
         jquery_ui: '../vendors/js/jquery-ui-1.10.4.custom',
         lodash: '../vendors/js/lodash.min',
         backbone: '../vendors/js/backbone',
-        joint: '../vendors/js/joint_095',
+        joint: '../vendors/js/joint_096',
         fs: '../node_modules/browser-filesaver/FileSaver.min',
         app: 'app'
     },
