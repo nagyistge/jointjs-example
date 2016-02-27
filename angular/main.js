@@ -1,6 +1,8 @@
 require.config({
 	baseUrl: 'angular',
 	paths: {
+		image: '../node_modules/requirejs-plugins/src/image',
+
 		// angular vendors
 		angular: '../node_modules/angular/angular',
 		angularRoute: '../node_modules/angular-route/angular-route',
@@ -12,6 +14,7 @@ require.config({
 		// joint vendors
 		fs: '../node_modules/browser-filesaver/FileSaver.min',
 		layout_vendor: 'joint/vendors/css',
+		images: 'joint/images',
 		jquery: 'joint/vendors/js/jquery.min',
 		jquery_ui: 'joint/vendors/js/jquery-ui-1.10.4.custom',
 		lodash: 'joint/vendors/js/lodash.min',
