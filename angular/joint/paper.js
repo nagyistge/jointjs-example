@@ -1,104 +1,136 @@
-define(['util'], function (util) {
-    function initControls(joint, graph) {
+define([ 'util' ], function (util) {
+  function initControls(joint, graph) {
 
-        var paper = $('#paper');
-        var paper = new joint.dia.Paper({
-            el: paper,
-            width: paper.width(),
-            height: paper.height(),
-            gridSize: 1,
-            defaultLink: function (cellView, magnetDOMElement) {
-                var link = new joint.dia.Link({
-                    attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
-                });
+	var V = joint.V;
+	var paper = $('#paper');
+	var paper = new joint.dia.Paper({
+	  el: paper,
+	  width: paper.width(),
+	  height: paper.height(),
+	  gridSize: 1,
+	  defaultLink: function (cellView, magnetDOMElement) {
+		//joint.dia.LinkView.prototype.render.apply(this, arguments);
 
-                util.setId(graph, link);
-                return link;
+		var link = new joint.dia.Link({
+		  attrs: {
+			'.connection': {
+			  'stroke': '#3838A0'
+			},
+			'.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' }
+		  }
+		});
 
-                //if (magnetDOMElement.getAttribute('port') === 'output') {
-                //    var link = new joint.dia.Link({
-                //        attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
-                //    });
-                //
-                //    util.setId(graph, link);
-                //    return link;
-                //} else {
-                //    var link = new joint.dia.Link({
-                //        attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
-                //    })
-                //    util.setId(graph, link);
-                //
-                //    return link;
-                //}
-            },
-            //new joint.dia.Link({
-            //    attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
-            //}),
-            model: graph,
-            snapLinks: true,
-            embeddingMode: true,
-            validateEmbedding: function(childView, parentView) {
-                return parentView.model instanceof joint.shapes.devs.Coupled;
-            },
-            validateConnection: function(sourceView, sourceMagnet, targetView, targetMagnet) {
-                return sourceMagnet != targetMagnet;
-            },
-            markAvailable: true
-        });
+		link.on('change:target', function (link, target) {
 
-        /* rounded corners */
-        /*
-         _.each([c1,a1,a2,a3], function(element) {
-         element.attr({ '.body': { 'rx': 6, 'ry': 6 }});
-         });
-         */
-        /* custom highlighting */
+		  if (target.id) {
+			console.log('change:source' + JSON.stringify(link));
+			console.log('change:target' + JSON.stringify(target));
+			var model = paper.getModelById(link.attributes.id);
+			var view = paper.findViewByModel(model);
+			var source = link.get('source');
+			if (!source || !source.port) {
+			  return;
+			}
 
-        var V = joint.V;
-        var highlighter = V('circle', {
-            'r': 14,
-            'stroke': '#ff7e5d',
-            'stroke-width': '6px',
-            'fill': 'transparent',
-            'pointer-events': 'none'
-        });
+			V(view.$el[0 ].firstChild).addClass(source.port);
+		  }
+		});
 
-        paper.off('cell:highlight cell:unhighlight').on({
 
-            'cell:highlight': function(cellView, el, opt) {
+		util.setId(graph, link);
+		return link;
 
-                if (opt.embedding) {
-                    V(el).addClass('highlighted-parent');
-                }
+		//if (magnetDOMElement.getAttribute('port') === 'output') {
+		//    var link = new joint.dia.Link({
+		//        attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
+		//    });
+		//
+		//    util.setId(graph, link);
+		//    return link;
+		//} else {
+		//    var link = new joint.dia.Link({
+		//        attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
+		//    })
+		//    util.setId(graph, link);
+		//
+		//    return link;
+		//}
+	  },
+	  //new joint.dia.Link({
+	  //    attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
+	  //}),
+	  model: graph,
+	  snapLinks: true,
+	  embeddingMode: true,
+	  validateEmbedding: function (childView, parentView) {
+		return parentView.model instanceof joint.shapes.devs.Coupled;
+	  },
+	  //validateConnection: function(sourceView, sourceMagnet, targetView, targetMagnet) {
+	  //    return sourceMagnet != targetMagnet;
+	  //},
+	  validateConnection: function (cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
+		// Prevent linking from input ports.
+		if (magnetS && magnetS.getAttribute('type') === 'input') return false;
+		// Prevent linking from output ports to input ports within one element.
+		if (cellViewS === cellViewT) return false;
+		// Prevent linking to input ports.
+		return magnetT && magnetT.getAttribute('type') === 'input';
+	  },
+	  markAvailable: true
+	});
 
-                if (opt.connecting) {
-                    var bbox = V(el).bbox(false, paper.viewport);
-                    highlighter.translate(bbox.x + 10, bbox.y + 10, { absolute: true });
-                    V(paper.viewport).append(highlighter);
-                }
-            },
+	/* rounded corners */
+	/*
+	 _.each([c1,a1,a2,a3], function(element) {
+	 element.attr({ '.body': { 'rx': 6, 'ry': 6 }});
+	 });
+	 */
+	/* custom highlighting */
 
-            'cell:unhighlight': function(cellView, el, opt) {
+	var highlighter = V('circle', {
+	  'r': 14,
+	  'stroke': '#ff7e5d',
+	  'stroke-width': '6px',
+	  'fill': 'transparent',
+	  'pointer-events': 'none'
+	});
 
-                if (opt.embedding) {
-                    V(el).removeClass('highlighted-parent');
-                }
+	paper.off('cell:highlight cell:unhighlight').on({
 
-                if (opt.connecting) {
-                    highlighter.remove();
-                }
-            }
-        });
+	  'cell:highlight': function (cellView, el, opt) {
 
-        return {
-            graph: graph,
-            paper: paper
-        };
-    }
+		if (opt.embedding) {
+		  V(el).addClass('highlighted-parent');
+		}
 
-    return {
-        init: initControls
-    };
+		if (opt.connecting) {
+		  var bbox = V(el).bbox(false, paper.viewport);
+		  highlighter.translate(bbox.x + 10, bbox.y + 10, { absolute: true });
+		  V(paper.viewport).append(highlighter);
+		}
+	  },
+
+	  'cell:unhighlight': function (cellView, el, opt) {
+
+		if (opt.embedding) {
+		  V(el).removeClass('highlighted-parent');
+		}
+
+		if (opt.connecting) {
+		  highlighter.remove();
+		}
+	  }
+	});
+
+	return {
+	  graph: graph,
+	  paper: paper
+	};
+  }
+
+  return {
+	init: initControls
+  };
 
 //paper.on('blank:pointerdown', function(evt, x, y) {
 //    //alert('pointerdown on a blank area in the paper.')

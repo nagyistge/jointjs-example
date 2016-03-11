@@ -1,4 +1,8 @@
 /* elements */
+/* element styling */
+.available-cell rect {
+    stroke-dasharray: 5, 2;
+}
 
 .devs text {
     /* text-transform: uppercase; */
@@ -11,15 +15,37 @@
     stroke-width: 4px;
 }
 
-.devs .label {
+.devs .label1 {
     fill: #00d2c6;
     font-size: 16px;
+}
+
+.devs .label2 {
+    fill: #00d2c6;
+    font-size: 11px;
 }
 
 .devs .port-body {
     stroke: #ffffff;
     stroke-width: 2px;
-    fill: #7c68fc;
+    /*fill: #7c68fc;*/
+}
+
+.devs .inPorts .port0 .port-body {
+    fill: #7c68fc;;
+}
+
+/* port styling */
+.devs .inPorts .port0 .available-magnet {
+    fill: yellow;
+}
+
+.devs .outPorts .port0 .port-body {
+    fill: tomato;
+}
+
+.devs .outPorts .port1 .port-body {
+    fill: #008200;
 }
 
 .devs .port-body:hover {
@@ -35,14 +61,26 @@
     stroke: #ffb176;
 }
 
-.devs.Atomic .label {
+.devs.Atomic .label1 {
     fill: #ffb176;
 }
 
+.devs.Atomic .label2 {
+    fill: #ffb176;
+}
 /* links */
 
 .link .connection {
-    stroke: #212135;
+    stroke: #72baff;
+    stroke-width: 2px;
+}
+
+.link .connection.red {
+    stroke: tomato;
+    stroke-width: 2px;
+}
+.link .connection.green {
+    stroke: #008200;
     stroke-width: 2px;
 }
 
@@ -61,18 +99,14 @@
     transition: stroke 1s;
 }
 
-.devs.highlighted-parent .label {
+.devs.highlighted-parent .label1 {
     fill: #ff7e5d;
     transition: fill 1s;
     text-decoration: underline;
 }
 
-/* port styling */
-.available-magnet {
-    fill: yellow;
-}
-
-/* element styling */
-.available-cell rect {
-    stroke-dasharray: 5, 2;
+.devs.highlighted-parent .label2 {
+    fill: #ff7e5d;
+    transition: fill 1s;
+    text-decoration: underline;
 }
