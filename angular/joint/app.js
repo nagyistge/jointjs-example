@@ -23,27 +23,27 @@ define(['joint',
               api) {
 
 	    function initJoint() {
-		    var drawGraph = new joint.dia.Graph;
-		    drawGraph.currentId = 0;
-		    drawGraph.maxId = 100;
+			var drawGraph = new joint.dia.Graph;
+			drawGraph.currentId = 0;
+			drawGraph.maxId = 100;
 
-		    // 0 init fields
-		    init.initFields();
+			// 0 init fields
+			init.initFields();
 
-		    // 1 init dragging
-		    dragControls = drag.init(joint, drawGraph);
+			// 2 init paper for drawing
+			drawControls = paper.init(joint, drawGraph);
 
-		    // 2 init paper for drawing
-		    drawControls = paper.init(joint, drawGraph);
+			// 1 init dragging
+			dragControls = drag.init(joint, drawGraph, drawControls.paper);
 
-		    // 3 init paper events for selectable (resizing, deleting)
-		    editable.init(joint, drawControls.graph, drawControls.paper);
+			// 3 init paper events for selectable (resizing, deleting)
+			editable.init(joint, drawControls.graph, drawControls.paper);
 
-		    // 4 init controls
-		    init.initControls(dragControls.graph, dragControls.paper, shapeHtml);
+			// 4 init controls
+			init.initControls(dragControls.graph, dragControls.paper, shapeHtml);
 
-		    // 5 api
-		    api.init(drawControls.graph, drawControls.paper);
+			// 5 api
+			api.init(drawControls.graph, drawControls.paper);
 	    }
 
 	    return {

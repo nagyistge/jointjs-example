@@ -1,193 +1,260 @@
-define(['joint'], function (joint) {
-    function getCurrentId(graph){
-        var elements = graph.getElements();
-        if (!graph.currentId) {
-            graph.currentId = '0';
-        }
+define([ 'joint' ], function (joint) {
+	function getCurrentId(graph) {
+		var elements = graph.getElements();
+		if (!graph.currentId) {
+			graph.currentId = '0';
+		}
 
-        if (elements.length > 0) {
-            var ids = elements
-                .map(function (x) {
-                    return Number.parseInt(x.get('id'));
-                })
-                .sort();
+		if (elements.length > 0) {
+			var ids = elements
+				.map(function (x) {
+					return Number.parseInt(x.get('id'));
+				})
+				.sort();
 
-            graph.currentId = ids[ids.length - 1];
-        }
+			graph.currentId = ids[ ids.length - 1 ];
+		}
 
-        return graph.currentId;
-    }
+		return graph.currentId;
+	}
 
-    function addZero(graph) {
-        var zeroStr = "";
-        var zeroCount = graph.maxId.toString().length - graph.currentId.toString().length;
-        while (zeroCount > 0) {
-            zeroStr += "0";
-            zeroCount--;
-        }
+	function addZero(graph) {
+		var zeroStr = "";
+		var zeroCount = graph.maxId.toString().length - graph.currentId.toString().length;
+		while (zeroCount > 0) {
+			zeroStr += "0";
+			zeroCount--;
+		}
 
-        graph.currentId = zeroStr + graph.currentId;
-    }
+		graph.currentId = zeroStr + graph.currentId;
+	}
 
-    function setId(graph, element){
-        if (graph.currentId < graph.maxId) {
-            graph.currentId++;
-        }
-        else {
-            alert('max count: ' + graph.maxId + ' is riched!')
-            return;
-        }
+	function setId(graph, element) {
+		if (graph.currentId < graph.maxId) {
+			graph.currentId++;
+		}
+		else {
+			alert('max count: ' + graph.maxId + ' is riched!')
+			return;
+		}
 
-        addZero(graph);
+		addZero(graph);
 
-        element.set('id', graph.currentId);
-        graph.currentId = Number.parseInt(graph.currentId);
-    }
+		element.set('id', graph.currentId);
+		element.set('uuid', joint.util.uuid());
+		graph.currentId = Number.parseInt(graph.currentId);
+	}
 
-    function isPaperEmpty(paper) {
-        return !paper._views || Object.keys(paper._views).length <= 0;
-    }
+	function isPaperEmpty(paper) {
+		return !paper._views || Object.keys(paper._views).length <= 0;
+	}
 
-    function convertIdeJsonToServerJson(json, paper) {
-        // 0 init
-        var serverObjects = { cells: []};
-        var serverJson = JSON.stringify(serverObjects, null, 4);
+	function deleteConnection(paper, graph, parentUiid, childUiid) {
+		if (!paper || !parentUiid || !childUiid) {
+			return false;
+		}
 
-        // 1 check if empty
-        if (!json) return serverJson;
-        if (isPaperEmpty(paper)) {
-            console.log('Can not convert ide json to server json because of paper (no visual elements) is empty!')
-            return serverJson;
-        }
+		// child
+		var nodeChild = paper.jointNodesDict[ childUiid ];
+		if (nodeChild) {
+			var index = nodeChild.parents.indexOf(parentUiid);
+			if (index < 0) {
+				return;
+			}
 
-        // 2 set rules for filtering json keywords
-        var rules = [
-            "type", "inPorts", "outPorts", "id",
-            {
-                "source": ["id", "selector"]
-            },
-            {
-                "target": ["id", "selector"]
-            },
-            {
-                "attrs" : "custom_attrs"
-            }
-        ];
+			nodeChild.parents = nodeChild.parents.slice(1, index);
+			paper.jointNodesDict[ childUiid ] = nodeChild;
+		}
+	}
 
-        // get only names of rule objects
-        var keywords = rules.map(function (item) {
-            return item instanceof Object ? Object.keys(item)[0] : item;
-        });
+	function addConnection(paper, graph, parentUiid, childUiid) {
+		if (!paper || !parentUiid || !childUiid) {
+			return false;
+		}
 
-        // get only invested values
-        function getInnerProps(ruleName) {
-            var keywords = rules.map(function (item) {
-                return item instanceof Object ?
-                    (Object.keys(item)[0] === ruleName ? item[Object.keys(item)[0]] : undefined)
-                    : undefined;
-            });
+		if (!paper.jointNodesDict) {
+			paper.jointNodesDict = {};
+		}
 
-            return keywords.filter(function (item) {
-                return item != undefined;
-            })[0];
-        }
+		// parent
+		var nodeParent = paper.jointNodesDict[ parentUiid ];
+		if (nodeParent) {
 
-        var ideObjects = JSON.parse(json);
-        var cells = ideObjects.cells;
-        var cell,
-            serverCell;
+		} else {
+			nodeParent = {
+				uuid: parentUiid
+			};
+			paper.jointNodesDict[ parentUiid ] = nodeParent;
+		}
 
-        // 3 start loop by cell
-        for(var i = 0; i < cells.length; i++) {
+		// child
+		var nodeChild = paper.jointNodesDict[ childUiid ];
+		if (!nodeChild) {
+			nodeChild = {
+				uuid: childUiid
+			};
+		}
 
-            cell = cells[i];
-            serverCell = {};
+		if (!nodeChild.parents) {
+			nodeChild.parents = [];
+		}
+		nodeChild.parents.push(nodeParent.uuid);
+		paper.jointNodesDict[ childUiid ] = nodeChild;
 
-            // loop by property of cell
-            for(var prop in cell) {
-                if (!cell.hasOwnProperty(prop) ||
-                    keywords.indexOf(prop) < 0) {
-                    continue;
-                }
+		return true;
+	}
 
-                var innerCell = cell[prop];
 
-                // 4 if found attrts => get custom_attrs if exists
-                if (prop === 'attrs') {
-                    var key = getInnerProps(prop);
-                    var customAttrs = cell[prop][key];
-                    if (customAttrs) {
-                        serverCell[prop] = customAttrs;
-                    }
-                    continue;
-                }
+	function isCycle(paper, parentUiid, childUiid) {
+		var parentNode = paper.jointNodesDict[ parentUiid ];
+		if (!parentNode || !parentNode.parents) {
+			return false;
+		}
 
-                // 5 if found type => get text (text we could setup)
-                if (prop === 'type' && cell['attrs']['text']) {
-                    serverCell[prop] = cell['attrs']['text']['text'];
-                    continue;
-                }
+		if (~parentNode.parents.indexOf(childUiid)) {
+			return true;
+		}
 
-                // 6 if found type = link => get port by selector
-                if ((~['source', 'target'].indexOf(prop)) && cell['type'] === 'link') {
-                    var id = cell[prop].id;
-                    var selector = cell[prop].selector;
-                    var model = paper.getModelById(id);
-                    var view = paper.findViewByModel(model);
-                    var port = view.$el.find(selector);
-                    var value = port.attr('port');
-                    serverCell[prop] = {
-                        id:id,
-                        selector:value
-                    };
-                    continue;
-                }
+		for (var i = 0; i <= parentNode.parents.length; i++) {
+			var res = isCycle(paper, parentNode.parents[ i ], childUiid);
+			if (res) {
+				return true;
+			}
+		}
 
-                // 7 simple property (not object)
-                if (!(innerCell instanceof Object)) {
-                    // instead of link => Link
-                    serverCell[prop]  = cell[prop] === 'link' ? 'Link' : cell[prop];
-                }
-                // 8 property object (dict)
-                else {
-                    var innerProps = getInnerProps(prop);
-                    // 9 if not exists rule => get full value (example "outPorts")
-                    if (!innerProps || innerProps.length == 0) {
-                        serverCell[prop] = innerCell;
-                    }
-                    // 10 if exists rule => filtering
-                    else {
-                        for (var innerProp in innerCell) {
-                            if (!innerCell.hasOwnProperty(innerProp) ||
-                                innerProps.indexOf(innerProp) < 0) {
-                                continue;
-                            }
+		return false;
+	}
 
-                            if (!(prop in serverCell)) {
-                                serverCell[prop] = {};
-                            }
+	function validateConnection(paper, graph, parentUiid, childUiid) {
+		if (!paper || !parentUiid || !childUiid) {
+			return false;
+		}
 
-                            serverCell[prop][innerProp] = innerCell[innerProp];
-                        }
-                    }
-                }
-            }
+		if (!paper.jointNodesDict) {
+			return true;
+		}
 
-            // 11 if not created attrs => add empty default value
-            if (!~Object.keys(serverCell).indexOf('attrs')) {
-                serverCell['attrs'] = {};
-            }
+		var parentNode = paper.jointNodesDict[ parentUiid ];
+		if (!parentNode || !parentNode.parents) {
+			return true;
+		}
 
-            serverObjects.cells.push(serverCell);
-        }
+		var result = !isCycle(paper, parentUiid, childUiid);
 
-        serverJson = JSON.stringify(serverObjects, null, 4);
-        return serverJson;
-    }
+		return result
+	}
 
-    return {
-        getCurrentId: getCurrentId,
-        setId: setId,
-        convertIdeJsonToServerJson: convertIdeJsonToServerJson
-    }
+	function convertIdeJsonToServerJson(json, paper) {
+		// 0 init
+		var nodesArray = [];
+		var serverJson = JSON.stringify(nodesArray, null, 4);
+
+		// 1 check if empty
+		if (isPaperEmpty(paper)) {
+			console.log('Can not convert ide json to server json because of paper (no visual elements) is empty!')
+			return serverJson;
+		}
+
+		var ideObjects = JSON.parse(json);
+		var cells = ideObjects.cells;
+
+		var allNodes = cells.filter(function (cell) {
+			return cell[ 'type' ] === 'link' ? null : cell;
+		});
+
+		var links = cells.filter(function (cell) {
+			return cell[ 'type' ] === 'link' ? cell : null;
+		});
+
+		var link,
+			node = {},
+			nodes = {},
+			rootNode = null;
+
+		for (var i = 0; i < links.length; i++) {
+			link = links[ i ];
+			if (!link.target.id) {
+				continue;
+			}
+
+			var modelSource = paper.getModelById(link.source.id);
+			var modelTarget = paper.getModelById(link.target.id);
+
+			if (modelSource.attributes.attrs.custom_attrs.isRoot) {
+				rootNode = modelSource;
+			}
+
+			var viewSource = paper.findViewByModel(modelSource);
+			var viewTarget = paper.findViewByModel(modelTarget);
+
+			var portSource = viewSource.$el.find(link.source.selector);
+			var portTarget = viewTarget.$el.find(link.target.selector);
+
+			node = nodes[ modelSource.attributes.uuid ];
+			if (!node) {
+				node = {};
+				node.block_id = modelSource.attributes.uuid;
+				node.children = {};
+			}
+
+			if (portSource[ 0 ].attributes.port === 'red') {
+				node.children.falseChild = modelTarget.attributes.uuid;
+			} else {
+				node.children.trueChild = modelTarget.attributes.uuid;
+			}
+
+			nodes[ modelSource.attributes.uuid ] = node;
+		}
+
+		for (var key in nodes) {
+			node = nodes[ key ];
+			nodesArray.push(node);
+		}
+
+		// fill empty nodes
+		var parsedNode = null;
+		for (var i = 0; i < allNodes.length; i++) {
+			node = allNodes[ i ];
+			parsedNode = nodes[ node.uuid ];
+			if (!parsedNode) {
+				nodes[ node.uuid ] = {
+					block_id: node.uuid,
+					children: {
+						trueChild: "",
+						falseChild: ""
+					}
+				};
+			} else if (!parsedNode.children.trueChild) {
+				parsedNode.children.trueChild = "";
+			} else if (!parsedNode.children.falseChild) {
+				parsedNode.children.falseChild = "";
+			}
+		}
+
+		paper.jointNodes = nodesArray;
+
+		if (!rootNode) {
+			return serverJson;
+		}
+
+		var rootObject = {};
+		rootObject.abort_block_id = "";
+		rootObject.constraint_graph = nodesArray;
+		rootObject.constraint_id = rootNode.attributes.uuid;
+		rootObject.start_block_id = rootNode.attributes.uuid;
+		rootObject.constraint_name = "Allow Admin transactions in business hours";
+		rootObject.constraint_description = "This constraint allows a user with role admin to access API bewteen business hours";
+
+		serverJson = JSON.stringify(rootObject, null, 4);
+		return serverJson;
+	}
+
+	return {
+		getCurrentId: getCurrentId,
+		setId: setId,
+		convertIdeJsonToServerJson: convertIdeJsonToServerJson,
+		validateConnection: validateConnection,
+		addConnection: addConnection,
+		deleteConnection: deleteConnection
+	}
 });

@@ -124,6 +124,7 @@ define(['joint', 'fs', 'util', 'const'],
                     json = JSON.stringify(drawControls.graph, null, 4);
                     serverJson = util.convertIdeJsonToServerJson(json, paper);
                     $serverLog.val(serverJson);
+                    $log.val(json);
                 }
 
                 if (!json) {
