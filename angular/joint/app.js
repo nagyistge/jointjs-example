@@ -7,7 +7,6 @@ define(['joint',
         'editable',
         'drag',
         'paper',
-        'joint.shapes.html',
         'init',
         'api',
         'style!layout/devs'
@@ -18,14 +17,13 @@ define(['joint',
               editable,
               drag,
               paper,
-              shapeHtml,
               init,
               api) {
 
 	    function initJoint() {
 			var drawGraph = new joint.dia.Graph;
 			drawGraph.currentId = 0;
-			drawGraph.maxId = 100;
+			drawGraph.maxId = 100000;
 
 			// 0 init fields
 			init.initFields();
@@ -40,7 +38,7 @@ define(['joint',
 			editable.init(joint, drawControls.graph, drawControls.paper);
 
 			// 4 init controls
-			init.initControls(dragControls.graph, dragControls.paper, shapeHtml);
+			init.initControls(dragControls.graph, dragControls.paper);
 
 			// 5 api
 			api.init(drawControls.graph, drawControls.paper);

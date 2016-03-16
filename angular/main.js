@@ -31,7 +31,6 @@ require.config({
 		api: 'joint/api',
 		form: 'joint/form',
 		'joint.shapes.devs': 'joint/joint.shapes.devs',
-		'joint.shapes.html': 'joint/joint.shapes.html',
 		const: 'joint/const',
 		jointApp: 'joint/app'
 	},

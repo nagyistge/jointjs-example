@@ -49,7 +49,7 @@ define([ 'joint' ], function (joint) {
 		return !paper._views || Object.keys(paper._views).length <= 0;
 	}
 
-	function deleteConnection(paper, graph, parentUiid, childUiid) {
+	function deleteConnection(paper, graph, parentUiid, childUiid, childElement) {
 		if (!paper || !parentUiid || !childUiid) {
 			return false;
 		}
@@ -62,7 +62,13 @@ define([ 'joint' ], function (joint) {
 				return;
 			}
 
-			nodeChild.parents = nodeChild.parents.slice(1, index);
+			var links = graph.getConnectedLinks(childElement, {inbound: true});
+			if (!links || links.length === 0) {
+				nodeChild.parents = [];
+			} else {
+				nodeChild.parents = nodeChild.parents.splice(index, 1);
+			}
+
 			paper.jointNodesDict[ childUiid ] = nodeChild;
 		}
 	}
@@ -98,6 +104,7 @@ define([ 'joint' ], function (joint) {
 		if (!nodeChild.parents) {
 			nodeChild.parents = [];
 		}
+
 		nodeChild.parents.push(nodeParent.uuid);
 		paper.jointNodesDict[ childUiid ] = nodeChild;
 
@@ -125,22 +132,22 @@ define([ 'joint' ], function (joint) {
 		return false;
 	}
 
-	function validateConnection(paper, graph, parentUiid, childUiid) {
+	function validateConnection(paper, graph, parentUiid, childUiid, childModel) {
 		if (!paper || !parentUiid || !childUiid) {
 			return false;
 		}
 
 		if (!paper.jointNodesDict) {
-			return true;
+			paper.jointNodesDict = {};
 		}
 
-		var parentNode = paper.jointNodesDict[ parentUiid ];
-		if (!parentNode || !parentNode.parents) {
-			return true;
+		// node cant has more 2 parents
+		var links = graph.getConnectedLinks(childModel, {inbound: true});
+		if (links && links.length === 2) {
+			return false;
 		}
 
 		var result = !isCycle(paper, parentUiid, childUiid);
-
 		return result
 	}
 

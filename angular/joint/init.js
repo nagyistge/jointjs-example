@@ -1,5 +1,5 @@
 define([ 'joint', 'joint.shapes.devs', 'const', 'image!angular/joint/images/male.png' ], function (joint, Shapes, lugConst, male) {
-  function initControls(graph, paper, HtmlShapes) {
+  function initControls(graph, paper) {
 
 	var root = new Shapes.Atomic({
 	  position: { x: 45, y: 5 },

@@ -37,7 +37,7 @@ define([ 'joint', 'lodash' ], function (joint, _) {
 		'<g class="outPorts"/>' +
 		'</g>',
 		portMarkup: '<g class="port port<%= id %>">' +
-		'<circle class="port-body available-magnet"/>' +
+		'<circle class="port-body"/>' +
 		'<text class="port-label"/>' +
 		'</g>',
 
