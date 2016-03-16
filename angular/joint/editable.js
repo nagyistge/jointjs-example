@@ -94,10 +94,14 @@ define(['jquery',
                 updateEditableBox(true);
 
                 // 4 delete button
-                lastCellView.$htmlBox.find('.delete').on('click', function () {
-                    cellView.model.remove();
-                    deleteExtraProperties(true);
-                });
+                if (lastCellView.model.attributes.attrs.custom_attrs.isRoot) {
+                    lastCellView.$htmlBox.find('.delete').hide();
+                } else {
+                    lastCellView.$htmlBox.find('.delete').on('click', function () {
+                        cellView.model.remove();
+                        deleteExtraProperties(true);
+                    });
+                }
 
                 // 5 activate resizing
                 if (lastCellView.htmlElement) return;
@@ -218,7 +222,7 @@ define(['jquery',
 
             paper.on('cell:pointerdown', function (cellView, evt, x, y) { resizingAllow = true; });
             paper.on('cell:pointermove', function (cellView, evt, x, y) { resizingAllow = false; });
-            paper.on('cell:pointerup', function (cellView, evt, x, y) {
+            paper.on('cell:pointerdblclick', function (cellView, evt, x, y) {
                 editibleOn(cellView);
             });
             paper.on('blank:pointerup', function (evt, x, y) { editibleOff(evt); });

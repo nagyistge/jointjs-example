@@ -18,18 +18,20 @@ define([ 'joint' ], function (joint) {
 		return graph.currentId;
 	}
 
-	function addZero(graph) {
-		var zeroStr = "";
-		var zeroCount = graph.maxId.toString().length - graph.currentId.toString().length;
-		while (zeroCount > 0) {
-			zeroStr += "0";
-			zeroCount--;
-		}
-
-		graph.currentId = zeroStr + graph.currentId;
-	}
 
 	function setId(graph, element) {
+
+		function addZero(graph) {
+			var zeroStr = "";
+			var zeroCount = graph.maxId.toString().length - graph.currentId.toString().length;
+			while (zeroCount > 0) {
+				zeroStr += "0";
+				zeroCount--;
+			}
+
+			graph.currentId = zeroStr + graph.currentId;
+		}
+
 		if (graph.currentId < graph.maxId) {
 			graph.currentId++;
 		}
@@ -49,110 +51,12 @@ define([ 'joint' ], function (joint) {
 		return !paper._views || Object.keys(paper._views).length <= 0;
 	}
 
-	function deleteConnection(paper, graph, parentUiid, childUiid, childElement) {
-		if (!paper || !parentUiid || !childUiid) {
-			return false;
-		}
-
-		// child
-		var nodeChild = paper.jointNodesDict[ childUiid ];
-		if (nodeChild) {
-			var index = nodeChild.parents.indexOf(parentUiid);
-			if (index < 0) {
-				return;
-			}
-
-			var links = graph.getConnectedLinks(childElement, {inbound: true});
-			if (!links || links.length === 0) {
-				nodeChild.parents = [];
-			} else {
-				nodeChild.parents = nodeChild.parents.splice(index, 1);
-			}
-
-			paper.jointNodesDict[ childUiid ] = nodeChild;
-		}
-	}
-
-	function addConnection(paper, graph, parentUiid, childUiid) {
-		if (!paper || !parentUiid || !childUiid) {
-			return false;
-		}
-
-		if (!paper.jointNodesDict) {
-			paper.jointNodesDict = {};
-		}
-
-		// parent
-		var nodeParent = paper.jointNodesDict[ parentUiid ];
-		if (nodeParent) {
-
-		} else {
-			nodeParent = {
-				uuid: parentUiid
-			};
-			paper.jointNodesDict[ parentUiid ] = nodeParent;
-		}
-
-		// child
-		var nodeChild = paper.jointNodesDict[ childUiid ];
-		if (!nodeChild) {
-			nodeChild = {
-				uuid: childUiid
-			};
-		}
-
-		if (!nodeChild.parents) {
-			nodeChild.parents = [];
-		}
-
-		nodeChild.parents.push(nodeParent.uuid);
-		paper.jointNodesDict[ childUiid ] = nodeChild;
-
-		return true;
-	}
-
-
-	function isCycle(paper, parentUiid, childUiid) {
-		var parentNode = paper.jointNodesDict[ parentUiid ];
-		if (!parentNode || !parentNode.parents) {
-			return false;
-		}
-
-		if (~parentNode.parents.indexOf(childUiid)) {
-			return true;
-		}
-
-		for (var i = 0; i <= parentNode.parents.length; i++) {
-			var res = isCycle(paper, parentNode.parents[ i ], childUiid);
-			if (res) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	function validateConnection(paper, graph, parentUiid, childUiid, childModel) {
-		if (!paper || !parentUiid || !childUiid) {
-			return false;
-		}
-
-		if (!paper.jointNodesDict) {
-			paper.jointNodesDict = {};
-		}
-
-		// node cant has more 2 parents
-		var links = graph.getConnectedLinks(childModel, {inbound: true});
-		if (links && links.length === 2) {
-			return false;
-		}
-
-		var result = !isCycle(paper, parentUiid, childUiid);
-		return result
-	}
-
-	function convertIdeJsonToServerJson(json, paper) {
+	function convertIdeJsonToServerJson(json, paper, returnServerJson) {
 		// 0 init
+		if (returnServerJson === undefined || returnServerJson === null) {
+			returnServerJson = true;
+		}
+
 		var nodesArray = [];
 		var serverJson = JSON.stringify(nodesArray, null, 4);
 
@@ -245,23 +149,61 @@ define([ 'joint' ], function (joint) {
 		}
 
 		var rootObject = {};
-		rootObject.abort_block_id = "";
-		rootObject.constraint_graph = nodesArray;
 		rootObject.constraint_id = rootNode.attributes.uuid;
-		rootObject.start_block_id = rootNode.attributes.uuid;
 		rootObject.constraint_name = "Allow Admin transactions in business hours";
 		rootObject.constraint_description = "This constraint allows a user with role admin to access API bewteen business hours";
+		rootObject.start_block_id = rootNode.attributes.uuid;
+		rootObject.abort_block_id = "";
+		rootObject.constraint_graph = nodesArray;
 
 		serverJson = JSON.stringify(rootObject, null, 4);
-		return serverJson;
+
+		var apiJson = convertServerJsonToAPI(serverJson);
+		return returnServerJson ? serverJson : apiJson;
+	}
+
+	function convertServerJsonToAPI(json) {
+		var apiJson = "";
+		if (!json) {
+			return apiJson;
+		}
+
+		var serverRoot = JSON.parse(json);
+		if (!serverRoot) {
+			return;
+		}
+
+		var rootObject = {};
+		rootObject.constraint_id = serverRoot.constraint_id;
+		rootObject.constraint_name = serverRoot.constraint_name;
+		rootObject.constraint_description = serverRoot.constraint_description;
+		rootObject.start_element_id = serverRoot.start_block_id;
+		rootObject.abort_element_id = serverRoot.abort_block_id;
+		rootObject.constraint_graph = serverRoot.constraint_graph;
+
+		if (rootObject.constraint_graph) {
+			var node = null,
+				apiNode = null,
+				apiNodes = [];
+			for (var i = 0; i < rootObject.constraint_graph.length; i++) {
+				node = rootObject.constraint_graph[ i ];
+				apiNode = {};
+				apiNode.element_id = joint.util.uuid();
+				apiNode.ref_block_id = node.block_id;
+				apiNode.children = node.children;
+				apiNodes.push(apiNode);
+			}
+
+			rootObject.constraint_graph = apiNodes;
+		}
+
+		apiJson = JSON.stringify(rootObject, null, 4);
+		return apiJson;
 	}
 
 	return {
 		getCurrentId: getCurrentId,
 		setId: setId,
-		convertIdeJsonToServerJson: convertIdeJsonToServerJson,
-		validateConnection: validateConnection,
-		addConnection: addConnection,
-		deleteConnection: deleteConnection
+		convertIdeJsonToServerJson: convertIdeJsonToServerJson
 	}
 });

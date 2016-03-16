@@ -32,11 +32,11 @@ define([ 'util' ], function (util) {
 				return parentView.model instanceof joint.shapes.devs.Coupled;
 			},
 
-			validateConnection: function (cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
+			validateConnection: function (cellViewSource, magnetS, cellViewTarget, magnetT, end, linkView) {
 				// Prevent linking from input ports.
 				if (magnetS && magnetS.getAttribute('type') === 'input') return false;
 				// Prevent linking from output ports to input ports within one element.
-				if (cellViewS === cellViewT) return false;
+				if (cellViewSource === cellViewTarget) return false;
 				// Prevent linking to input ports.
 				var result = magnetT && magnetT.getAttribute('type') === 'input';
 				if (!result) {
@@ -44,12 +44,14 @@ define([ 'util' ], function (util) {
 				}
 
 				// check if no cycles
-				var sourceUiid = cellViewS.model.attributes.uuid;
-				var targetUiid = cellViewT.model.attributes.uuid;
+				var inLinks = graph.getConnectedLinks(cellViewTarget.model, {inbound: true});
+				if (inLinks && inLinks.length === 2) {
+					return false;
+				}
 
-				//var valid = util.validateConnection(this, graph, sourceUiid, targetUiid);
-				var valid = util.validateConnection(this, graph, cellViewS.model.id, cellViewT.model.id, cellViewT.model);
-				return valid;
+				var res = graph.isPredecessor(cellViewSource.model, cellViewTarget.model);
+				return !res;
+				//return valid;
 			},
 			markAvailable: true
 		});
@@ -59,13 +61,13 @@ define([ 'util' ], function (util) {
 				linkConnected(link);
 			}
 			if (link.get('source').id && !link.get('target').id) {
-				linkDisconnected(link);
+				//linkDisconnected(link);
 			}
 		});
 
 		graph.on('remove', function (cell, collection, opt) {
 			if (cell.isLink()) {
-				linkRemove(cell);
+				//linkRemove(cell);
 			}
 		});
 
@@ -104,7 +106,6 @@ define([ 'util' ], function (util) {
 			}
 		});
 
-
 		function linkConnected(link) {
 			var model = paper.getModelById(link.attributes.id);
 			var view = paper.findViewByModel(model);
@@ -113,38 +114,11 @@ define([ 'util' ], function (util) {
 				return;
 			}
 
-			var target = link.get('target');
-			var modelSource = paper.getModelById(source.id);
-			var modelTarget = paper.getModelById(target.id);
-			//util.addConnection(paper, graph, modelSource.attributes.uuid, modelTarget.attributes.uuid);
-			util.addConnection(paper, graph, source.id, target.id);
+			//var target = link.get('target');
+			//var modelSource = paper.getModelById(source.id);
+			//var modelTarget = paper.getModelById(target.id);
 
 			V(view.$el[ 0 ].firstChild).addClass(source.port);
-		}
-
-		function linkDisconnected(link) {
-			if (!link._previousAttributes.target || !link._previousAttributes.target.id) {
-				return;
-			}
-
-			linkRemove(link, link._previousAttributes.target.id);
-		}
-
-		function linkRemove(link, targetId) {
-			var modelSource = paper.getModelById(link.attributes.source.id);
-			var modelTarget = null;
-			if (!targetId) {
-				modelTarget = paper.getModelById(link.attributes.target.id);
-			} else {
-				modelTarget = paper.getModelById(targetId);
-			}
-
-			if (!modelSource || !modelTarget) {
-				return;
-			}
-
-			//util.deleteConnection(paper, graph, modelSource.attributes.uuid, modelTarget.attributes.uuid);
-			util.deleteConnection(paper, graph, link.attributes.source.id, modelTarget.attributes.id, modelTarget);
 		}
 
 		return {

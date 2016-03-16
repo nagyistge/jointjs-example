@@ -33,6 +33,7 @@ define([ 'joint', 'lodash' ], function (joint, _) {
 		'</g>' +
 		'<text class="label1"/>' +
 		'<text class="label2"/>' +
+		'<title />' +
 		'<g class="inPorts"/>' +
 		'<g class="outPorts"/>' +
 		'</g>',
@@ -171,21 +172,7 @@ define([ 'joint', 'lodash' ], function (joint, _) {
 		}, joint.shapes.devs.Model.prototype.defaults)
 
 	});
-	joint.shapes.devs.Coupled = joint.shapes.devs.Model.extend({
 
-		defaults: joint.util.deepSupplement({
-
-			type: 'devs.Coupled',
-			//size: { width: 200, height: 300 },
-			attrs: {
-				'.body': { fill: 'seaGreen' },
-				'.label': { text: 'Coupled' },
-				'.inPorts .port-body': { fill: 'PaleGreen' },
-				'.outPorts .port-body': { fill: 'Tomato' }
-			}
-
-		}, joint.shapes.devs.Model.prototype.defaults)
-	});
 	joint.shapes.devs.Link = joint.dia.Link.extend({
 
 		defaults: {
@@ -202,7 +189,6 @@ define([ 'joint', 'lodash' ], function (joint, _) {
 
 	joint.shapes.devs.ModelView = joint.dia.ElementView.extend(joint.shapes.basic.PortsViewInterface);
 	joint.shapes.devs.AtomicView = joint.shapes.devs.ModelView;
-	joint.shapes.devs.CoupledView = joint.shapes.devs.ModelView;
 
 	///org.member
 	joint.shapes.devs.Member = joint.shapes.org.Member;
