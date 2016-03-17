@@ -12,7 +12,7 @@ define([ 'joint', 'joint.shapes.devs', 'const', 'image!angular/joint/images/male
 			return defaults;
 		}
 
-		if (text.length >= 25) {
+		if (text.length > 25) {
 			defaults.text = defaults.text.substring(0, 22) + "...";
 			defaults.fontSize = 9;
 			defaults.width = 200;
@@ -32,7 +32,7 @@ define([ 'joint', 'joint.shapes.devs', 'const', 'image!angular/joint/images/male
 	function initControls(graph, paper) {
 
 		var label1 = calcWidthByName('Root node');
-		var label2 = calcWidthByName('This is 24 length text ex');
+		var label2 = calcWidthByName('This is 25 length text ex');
 
 		var root = new Shapes.Atomic({
 			position: { x: 10, y: 5 },
@@ -58,7 +58,7 @@ define([ 'joint', 'joint.shapes.devs', 'const', 'image!angular/joint/images/male
 		});
 
 		var label1 = calcWidthByName('Child node');
-		var label2 = calcWidthByName('This is 25 length text ex');
+		var label2 = calcWidthByName('This is 30 length text ex ex e');
 
 		var child = new Shapes.Atomic({
 			position: { x: 10, y: 80 },
