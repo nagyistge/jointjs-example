@@ -17,12 +17,10 @@
 
 .devs .label1 {
     fill: #00d2c6;
-    font-size: 16px;
 }
 
 .devs .label2 {
     fill: #00d2c6;
-    font-size: 11px;
 }
 
 .devs .port-body {
@@ -48,13 +46,34 @@
     fill: #008200;
 }
 
+/* hide ports*/
+.devs .inPorts .port0 .port-body.hide {
+    visibility: hidden;
+}
+
+.devs .outPorts .port0 .port-body.hide {
+    visibility: hidden;
+}
+
+.devs .outPorts .port1 .port-body.hide {
+    visibility: hidden;
+}
+
 .devs .port-body:hover {
     opacity: 1;
     fill: #ff7e5d;
 }
 
+/* port label */
 .devs .port-label {
     fill: #7c68fc;
+}
+
+.devs .port-label.hide {
+    visibility: hidden;
+}
+.devs .port-label.show {
+    visibility: visible;
 }
 
 .devs.Atomic .body {

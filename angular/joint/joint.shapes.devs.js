@@ -7,22 +7,6 @@
  */
 define([ 'joint', 'lodash' ], function (joint, _) {
 
-	//if (typeof exports === 'object') {
-	//
-	//	var joint = {
-	//		util: require('../src/core').util,
-	//		shapes: {
-	//			basic: require('./joint.shapes.basic'),
-	//			org: require('./joint.shapes.org'),
-	//		},
-	//		dia: {
-	//			ElementView: require('../src/joint.dia.element').ElementView,
-	//			Link: require('../src/joint.dia.link').Link
-	//		}
-	//	};
-	//	var _ = require('lodash');
-	//}
-
 	joint.shapes.devs = {};
 	joint.shapes.devs.Model = joint.shapes.basic.Generic.extend(_.extend({}, joint.shapes.basic.PortsModelInterface, {
 
@@ -37,9 +21,10 @@ define([ 'joint', 'lodash' ], function (joint, _) {
 		'<g class="inPorts"/>' +
 		'<g class="outPorts"/>' +
 		'</g>',
+
 		portMarkup: '<g class="port port<%= id %>">' +
-		'<circle class="port-body"/>' +
-		'<text class="port-label"/>' +
+		'<circle class="port-body hide"/>' +
+		'<text class="port-label hide"/>' +
 		'</g>',
 
 		defaults: joint.util.deepSupplement({
@@ -52,24 +37,26 @@ define([ 'joint', 'lodash' ], function (joint, _) {
 
 			attrs: {
 
-			  rect: { width: 170, height: 60 },
+				rect: { width: 170, height: 60 },
 
-			  '.': {
+				'.': {
 					magnet: false
 				},
 				'.body': {
-				  stroke: '#000000',
-				  'stroke-width': 2,
-				  'pointer-events': 'visiblePainted',
-				  rx: 10,
-				  ry: 10
+					stroke: '#000000',
+					'stroke-width': 2,
+					'pointer-events': 'visiblePainted',
+					rx: 10,
+					ry: 10
 				},
 				image: {
-				  width: 48, height: 48,
-				  ref: '.body', 'ref-x': 10, 'ref-y': 5
+					width: 48, height: 48,
+					ref: '.body',
+					'ref-x': 10,
+					'ref-y': 5
 				},
 
-			  '.port-body': {
+				'.port-body': {
 					r: 7,
 					magnet: true,
 					stroke: '#000000'
@@ -78,16 +65,22 @@ define([ 'joint', 'lodash' ], function (joint, _) {
 					'pointer-events': 'none'
 				},
 				'.label1': {
-				  'font-weight': '800',
-				  ref: '.body', 'ref-x': 0.9, 'ref-y': 0.2,
-				  'font-family': 'Courier New', 'font-size': 14,
-				  'text-anchor': 'end'
+					'font-weight': '800',
+					ref: '.body',
+					'ref-x': 0.98,
+					'ref-y': 0.2,
+					'font-family': 'Courier New',
+					'font-size': 19,
+					'text-anchor': 'end'
 				},
 				'.label2': {
-				  'font-weight': '800',
-				  ref: '.body', 'ref-x': 0.9, 'ref-y': 0.6,
-				  'font-family': 'Courier New', 'font-size': 14,
-				  'text-anchor': 'end'
+					'font-weight': '800',
+					ref: '.body',
+					'ref-x': 0.98,
+					'ref-y': 0.6,
+					'font-family': 'Courier New',
+					'font-size': 9,
+					'text-anchor': 'end'
 				},
 				'.inPorts .port-label': {
 					x: -15,
@@ -112,7 +105,7 @@ define([ 'joint', 'lodash' ], function (joint, _) {
 			var portSelector = selector + '>.' + portClass;
 			var portLabelSelector = portSelector + '>.port-label';
 			var portBodySelector = portSelector + '>.port-body';
-			var portLabelSelectorTextY = portLabelSelector + '>.v-line';
+			//var portLabelSelectorTextY = portLabelSelector + '>.v-line';
 
 			//attrs[ portLabelSelector ] = { text: portName };
 			attrs[ portBodySelector ] = { port: { id: portName || _.uniqueId(type), type: type } };
@@ -137,7 +130,7 @@ define([ 'joint', 'lodash' ], function (joint, _) {
 				//};
 			}
 
-			var offset = 15 + (portName.length > 5 ? portName.length - 1: portName.length) * 10;
+			var offset = 15 + (portName.length > 5 ? portName.length - 1 : portName.length) * 10;
 			if (selector === '.inPorts') {
 				attrs[ portLabelSelector ] = {
 					text: portName,
@@ -189,68 +182,6 @@ define([ 'joint', 'lodash' ], function (joint, _) {
 
 	joint.shapes.devs.ModelView = joint.dia.ElementView.extend(joint.shapes.basic.PortsViewInterface);
 	joint.shapes.devs.AtomicView = joint.shapes.devs.ModelView;
-
-	///org.member
-	joint.shapes.devs.Member = joint.shapes.org.Member;
-
-	joint.shapes.devs.MemberCustom = joint.dia.Element.extend({
-
-		markup: '<g class="rotatable">' +
-		'<g class="scalable">' +
-		'<rect class="card"/>' +
-		'<image/></g><text class="rank"/>' +
-		'<text class="name"/>' +
-		'<g class="inPorts"/>' +
-		'<g class="outPorts"/>' +
-		'</g>',
-
-		defaults: joint.util.deepSupplement({
-
-			type: 'org.Member',
-			size: { width: 180, height: 70 },
-			attrs: {
-
-				rect: { width: 170, height: 60 },
-
-				'.card': {
-					stroke: '#000000',
-				  'stroke-width': 2,
-					'pointer-events': 'visiblePainted',
-				  rx: 10,
-				  ry: 10
-				},
-				image: {
-					width: 48, height: 48,
-					ref: '.card', 'ref-x': 10, 'ref-y': 5
-				},
-
-			  '.rank': {
-				'text-decoration': 'underline',
-				ref: '.card', 'ref-x': 0.9, 'ref-y': 0.2,
-				'font-family': 'Courier New', 'font-size': 14,
-				'text-anchor': 'end'
-			  },
-
-			  '.name': {
-				'font-weight': '800',
-				ref: '.card', 'ref-x': 0.9, 'ref-y': 0.6,
-				'font-family': 'Courier New', 'font-size': 14,
-				'text-anchor': 'end'
-			  },
-			  '.inPorts .port-label': {
-					x: -15,
-					dy: 4,
-					'text-anchor': 'end',
-					fill: '#000000'
-				},
-				'.outPorts .port-label': {
-					x: 15,
-					dy: 4,
-					fill: '#000000'
-				}
-			}
-		}, joint.dia.Element.prototype.defaults)
-	});
 
 	if (typeof exports === 'object') {
 		module.exports = joint.shapes.devs;

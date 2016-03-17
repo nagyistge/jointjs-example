@@ -27,9 +27,18 @@ define([ 'util' ], function (util) {
 			model: graph,
 			snapLinks: true,
 			embeddingMode: true,
+			validateMagnet: function (cellView, magnet) {
+				// allow only 2 outgoing connections
+				var inLinks = graph.getConnectedLinks(cellView.model, {outbound: true});
+				if (inLinks && inLinks.length >= 2) {
+					return false;
+				}
+
+				return true;
+			},
 
 			validateEmbedding: function (childView, parentView) {
-				return parentView.model instanceof joint.shapes.devs.Coupled;
+				return parentView.model instanceof joint.shapes.devs.Atomic;
 			},
 
 			validateConnection: function (cellViewSource, magnetS, cellViewTarget, magnetT, end, linkView) {
@@ -43,16 +52,10 @@ define([ 'util' ], function (util) {
 					return result;
 				}
 
-				// check if no cycles
-				var inLinks = graph.getConnectedLinks(cellViewTarget.model, {inbound: true});
-				if (inLinks && inLinks.length === 2) {
-					return false;
-				}
-
 				var res = graph.isPredecessor(cellViewSource.model, cellViewTarget.model);
 				return !res;
-				//return valid;
 			},
+
 			markAvailable: true
 		});
 

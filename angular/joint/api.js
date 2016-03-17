@@ -132,7 +132,7 @@ define([ 'joint', 'fs', 'util', 'const' ],
 					},
 					error: function (data) {
 						console.log('error: ' + data);
-					},
+					}
 				});
 			}
 

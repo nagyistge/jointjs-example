@@ -1,14 +1,53 @@
 define([ 'joint', 'joint.shapes.devs', 'const', 'image!angular/joint/images/male.png' ], function (joint, Shapes, lugConst, male) {
+
+	function calcWidthByName(text) {
+		var defaults = {
+			width: 160,
+			fontSize: 19,
+			text: text
+		};
+
+		if (!text) {
+			defaults.width = defaults.width / 2;
+			return defaults;
+		}
+
+		if (text.length >= 25) {
+			defaults.text = defaults.text.substring(0, 22) + "...";
+			defaults.fontSize = 9;
+			defaults.width = 200;
+			return defaults;
+		}
+
+		if (text.length <= 10) {
+			return defaults;
+		}
+
+		defaults.fontSize = (25 - text.length) / 3 + 9;
+		defaults.width = 160 + ((text.length - 10) * 40) / 15;
+
+		return defaults;
+	}
+
 	function initControls(graph, paper) {
 
+		var label1 = calcWidthByName('Root node');
+		var label2 = calcWidthByName('This is 24 length text ex');
+
 		var root = new Shapes.Atomic({
-			position: { x: 45, y: 5 },
-			size: { width: 160, height: 80 },
+			position: { x: 10, y: 5 },
+			size: { width: Math.max(label1.width, label2.width), height: 60 },
 			outPorts: [ 'red', 'green' ],
 			attrs: {
 				image: { 'xlink:href': male.src },
-				'.label1': { text: 'Root node' },
-				'.label2': { text: 'Some text' },
+				'.label1': {
+					text: label1.text,
+					'font-size': label1.fontSize
+				},
+				'.label2': {
+					text: label2.text,
+					'font-size': label2.fontSize
+				},
 				title: { text: 'Root Static Tooltip' },
 				'.inPorts circle': { fill: '#16A085', magnet: 'passive', type: 'input' },
 				'.outPorts circle': { fill: '#E74C3C', type: 'output' },
@@ -18,15 +57,24 @@ define([ 'joint', 'joint.shapes.devs', 'const', 'image!angular/joint/images/male
 			}
 		});
 
+		var label1 = calcWidthByName('Child node');
+		var label2 = calcWidthByName('This is 25 length text ex');
+
 		var child = new Shapes.Atomic({
-			position: { x: 45, y: 155 },
-			size: { width: 160, height: 80 },
+			position: { x: 10, y: 80 },
+			size: { width: Math.max(label1.width, label2.width), height: 60 },
 			inPorts: [ 'blue' ],
 			outPorts: [ 'red', 'green' ],
 			attrs: {
 				image: { 'xlink:href': male.src },
-				'.label1': { text: 'Child node' },
-				'.label2': { text: 'Some text' },
+				'.label1': {
+					text: label1.text,
+					'font-size': label1.fontSize
+				},
+				'.label2': {
+					text: label2.text,
+					'font-size': label2.fontSize
+				},
 				title: { text: 'Child Static Tooltip' },
 				'.inPorts circle': { fill: '#16A085', magnet: 'passive', type: 'input' },
 				'.outPorts circle': { fill: '#E74C3C', type: 'output' },
@@ -36,27 +84,12 @@ define([ 'joint', 'joint.shapes.devs', 'const', 'image!angular/joint/images/male
 			}
 		});
 
-		var memberCustom = new Shapes.MemberCustom({
-			position: { x: 15, y: 530 },
-			size: { width: 170, height: 100 },
-			inPorts: [ 'period', 'up_time' ],
-			attrs: {
-				image: { 'xlink:href': male.src },
-				'.card': {
-					fill: '#7c68fd'
-				},
-				'.rank': {
-					text: 'CEO'
-				},
-				'.name': { text: 'KOIU' }
-			}
-		});
-
 		graph.addCells([
 			root,
-			child,
-			memberCustom
+			child
 		]);
+
+		paper.scale(0.7);
 	}
 
 	function loadUrlParams() {

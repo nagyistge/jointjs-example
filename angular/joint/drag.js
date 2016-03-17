@@ -1,145 +1,153 @@
-define(['util'], function (util) {
-    function initDragging(joint, graph) {
+define([ 'util' ], function (util) {
+	function initDragging(joint, graphDrawing, paperDrawing) {
+		var newElement = null,
+			bodyJq = null,
+			bufferControl = null;
 
-        var graphDrawing = graph;
-        var ClickableView = joint.dia.ElementView.extend({
-            pointerdown: function () {
-                this._click = true;
-                joint.dia.ElementView.prototype.pointerdown.apply(this, arguments);
-            },
-            pointermove: function () {
-                this._click = false;
-                joint.dia.ElementView.prototype.pointermove.apply(this, arguments);
-            },
-            pointerup: function (evt, x, y) {
-                if (this._click) {
-                    this.notify('cell:click', evt, x, y);
-                } else {
-                    joint.dia.ElementView.prototype.pointerup.apply(this, arguments);
-                }
-            }
-        });
+		var V = joint.V;
+		var ClickableView = joint.dia.ElementView.extend({
+			pointerdown: function () {
+				this._click = true;
+				joint.dia.ElementView.prototype.pointerdown.apply(this, arguments);
+			},
+			pointermove: function () {
+				this._click = false;
+				joint.dia.ElementView.prototype.pointermove.apply(this, arguments);
+			},
+			pointerup: function (evt, x, y) {
+				if (this._click) {
+					this.notify('cell:click', evt, x, y);
+				} else {
+					joint.dia.ElementView.prototype.pointerup.apply(this, arguments);
+				}
+			}
+		});
 
-        var paper = $('#paperControls');
-        var graphControls = new joint.dia.Graph;
-        var paperControls = new joint.dia.Paper({
-            el: paper,
-            width: paper.width(),
-            height: paper.height(),
-            model: graphControls,
-            gridSize: 1,
-            elementView: ClickableView,
-            interactive: false
-        });
+		var paper = $('#paperControls');
+		var graphControls = new joint.dia.Graph;
+		var paperControls = new joint.dia.Paper({
+			el: paper,
+			width: paper.width(),
+			height: paper.height(),
+			model: graphControls,
+			gridSize: 1,
+			elementView: ClickableView,
+			interactive: false
+		});
 
-        var newElement = null,
-            bodyJq = null,
-            bufferControl = null,
-            paperMainJq = null;
 
-        var graphBuffer, paperBuffer;
+		var graphBuffer, paperBuffer;
 
-        function allowDragDrop(event){
-            if (!event) return false;
-            paperMainJq = paperMainJq || $('#paper');
+		function allowDragDrop(event) {
+			if (!event) return false;
 
-            var offset = paperMainJq.offset();
-            var x = event.pageX, y = event.pageY;
+			var offset = paperDrawing.$el.offset();
+			var x = event.pageX, y = event.pageY;
 
-            if (x >= offset.left && x <= offset.left + paperMainJq.width()) {
-                if (y >= offset.top && y <= offset.top + paperMainJq.height())
-                    return true;
-            }
+			if (x >= offset.left && x <= offset.left + paperDrawing.$el.width()) {
+				if (y >= offset.top && y <= offset.top + paperDrawing.$el.height())
+					return true;
+			}
 
-            return false;
-        }
+			return false;
+		}
 
-        function clearBufferData(){
-            if (bodyJq){
-                bodyJq.off('mousemove');
-            }
+		paperControls.on('cell:pointermove', function (cellView, evt, x, y) {
+			bodyJq.bind('mousemove', function (e) {
 
-            newElement.remove();
-            newElement = null;
+				if (!cellView.model || !(cellView.model.getBBox instanceof Function)) return;
 
-            if (bufferControl){
-                bufferControl.remove();
-                bufferControl = null;
-            }
+				if (!bufferControl) {
+					bufferControl = $("div.box");
+					bufferControl.css('visibility', 'visible');
+				}
 
-            if (paperBuffer) {
-                paperBuffer.remove();
-                graphBuffer.clear();
-            }
-        }
+				var mouseX = e.pageX - cellView.model.getBBox().width / 2;
+				var mouseY = e.pageY - cellView.model.getBBox().height / 2;
+				bufferControl.offset({ top: mouseY, left: mouseX });
+			});
+		});
 
-        paperControls.on('cell:pointermove',function (cellView, evt, x, y) {
-            bodyJq.bind('mousemove', function(e){
+		paperControls.on('cell:pointerup', function (cellView, evt, x, y) {
+			if (!allowDragDrop(evt)) {
+				clearBufferData();
+				return;
+			}
 
-                if (!cellView.model || !(cellView.model.getBBox instanceof Function)) return;
+			// clear buffer element
+			if (!newElement) return;
 
-                if (!bufferControl) {
-                    bufferControl = $("div.box");
-                    bufferControl.css('visibility', 'visible');
-                }
+			var el = newElement.clone();
+			var bbox = el.getBBox();
 
-                var mouseX = e.pageX - cellView.model.getBBox().width / 2;
-                var mouseY = e.pageY - cellView.model.getBBox().height / 2;
-                bufferControl.offset({ top: mouseY, left: mouseX });
-            });
-        });
+			el.position(
+				evt.clientX - bbox.width / 2 - paperDrawing.$el.offset().left,
+				evt.clientY - bbox.height / 2 - paperDrawing.$el.offset().top + document.body.scrollTop);
 
-        paperControls.on('cell:pointerup', function (cellView, evt, x, y) {
-            if (!allowDragDrop(evt)) {
-                clearBufferData();
-                return;
-            }
+			util.setId(graphDrawing, el);
+			graphDrawing.addCells([ el ]);
+			showPorts(el);
+			clearBufferData();
+		});
 
-            // clear buffer element
-            if (!newElement) return;
+		paperControls.on('cell:pointerdown', function (cellView, evt, x, y) {
+			if (newElement) return;
 
-            var el = newElement.clone();
-            var bbox = el.getBBox();
-            paperMainJq = paperMainJq || $('#paper');
+			newElement = cellView.model.clone();
+			if (!(newElement.position instanceof Function)) return;
 
-            el.position(
-                evt.clientX - bbox.width / 2 - paperMainJq.offset().left,
-                evt.clientY - bbox.height / 2 - paperMainJq.offset().top + document.body.scrollTop);
+			bodyJq = bodyJq || $('body');
+			bodyJq.append('<div id="paperBuffer" class="box" style="z-index: 100;display:block;opacity:.7; visibility: hidden"></div>');
 
-            util.setId(graphDrawing, el);
-            graphDrawing.addCells([el]);
-            clearBufferData();
-        });
+			newElement.position(0, 0);
 
-        paperControls.on('cell:pointerdown', function (cellView, evt, x, y) {
-            if (newElement) return;
+			graphBuffer = new joint.dia.Graph;
+			paperBuffer = new joint.dia.Paper({
+				el: $('#paperBuffer'),
+				width: paperControls.options.width,
+				height: paperControls.options.height,
+				model: graphBuffer,
+				gridSize: 1
+			});
+			graphBuffer.addCells([ newElement ]);
+		});
 
-            newElement = cellView.model.clone();
-            if (!(newElement.position instanceof Function)) return;
+		function clearBufferData() {
+			if (bodyJq) {
+				bodyJq.off('mousemove');
+			}
 
-            bodyJq = bodyJq || $('body');
-            bodyJq.append('<div id="paperBuffer" class="box" style="z-index: 100;display:block;opacity:.7; visibility: hidden"></div>');
+			newElement.remove();
+			newElement = null;
 
-            newElement.position(0, 0);
+			if (bufferControl) {
+				bufferControl.remove();
+				bufferControl = null;
+			}
 
-            graphBuffer = new joint.dia.Graph;
-            paperBuffer = new joint.dia.Paper({
-                el: $('#paperBuffer'),
-                width: paperControls.options.width,
-                height: paperControls.options.height,
-                model: graphBuffer,
-                gridSize: 1
-            });
-            graphBuffer.addCells([newElement]);
-        });
+			if (paperBuffer) {
+				paperBuffer.remove();
+				graphBuffer.clear();
+			}
+		}
 
-        return {
-            graph: graphControls,
-            paper: paperControls
-        }
-    }
+		function showPorts(el) {
+			var view = paperDrawing.findViewByModel(el);
+			if (!view.model.attributes.attrs.custom_attrs.isRoot) {
+				V(view.el.querySelector('.devs .inPorts .port0 .port-body')).removeClass('hide');
+			}
 
-    return {
-        init: initDragging
-    }
+			V(view.el.querySelector('.devs .outPorts .port0 .port-body')).removeClass('hide');
+			V(view.el.querySelector('.devs .outPorts .port1 .port-body')).removeClass('hide');
+		}
+
+		return {
+			graph: graphControls,
+			paper: paperControls
+		}
+	}
+
+	return {
+		init: initDragging
+	}
 });
