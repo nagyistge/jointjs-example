@@ -112,12 +112,8 @@ define([ 'joint', 'joint.shapes.devs', 'const', 'image!angular/joint/images/male
 				buttonShowHidePortsText
 			]);
 
-			var model = drawPaper.getModelById(buttonShowHidePortsText.attributes.id);
-			var view = drawPaper.findViewByModel(model);
-			view.options.interactive = false;
-			// view.$el.attr({rect:{style:{'pointer-events':'none'}}});
-
 			util.showElementPorts(drawPaper, root);
+			util.disableServiceNodes(drawGraph, drawPaper, [buttonShowHidePortsText]);
 			dragPaper.scale(0.7);
 		}
 

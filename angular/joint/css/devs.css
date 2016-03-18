@@ -30,7 +30,7 @@
 }
 
 .devs .inPorts .port0 .port-body {
-    fill: #7c68fc;;
+    fill: #7c68fc;
 }
 
 /* port styling */
@@ -71,9 +71,6 @@
 
 .devs .port-label.hide {
     visibility: hidden;
-}
-.devs .port-label.show {
-    visibility: visible;
 }
 
 .devs.Atomic .body {

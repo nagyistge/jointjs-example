@@ -32,10 +32,29 @@ define([ 'joint' ], function (joint) {
 		currentId = Number.parseInt(currentId);
 	}
 
+	function disableServiceNodes(graph, paper, nodes) {
+		if (!nodes) {
+			nodes = graph.getCells();
+			nodes = _.filter(nodes, function (item) {
+				if (!item.isLink() && item.attributes.attrs.custom_attrs.isServiceButton) {
+					return item;
+				}
+
+				return null;
+			});
+		}
+
+		nodes.map(function (node) {
+			var model = paper.getModelById(node.attributes.id);
+			var view = paper.findViewByModel(model);
+			view.options.interactive = false;
+		});
+	}
+
 	function isPaperEmpty(paper) {
 		return !paper._views || Object.keys(paper._views).length <= 0;
 	}
-	
+
 	function showAllElementPorts(graph, paper) {
 		var cell,
 			model,
@@ -317,6 +336,7 @@ define([ 'joint' ], function (joint) {
 		linkConnected: linkConnected,
 		paintConnections: paintConnections,
 		deleteNotConnectedNodes: deleteNotConnectedNodes,
-		showHidePortsText: showHidePortsText
+		showHidePortsText: showHidePortsText,
+		disableServiceNodes: disableServiceNodes
 	}
 });

@@ -9,7 +9,6 @@ define(['jquery',
 
         function initPaperEvents(joint, graph, paper) {
 
-            var V = joint.V;
             var delete_button_template = '<button class="delete">x</button>';
 
             var resizing_box_body_template = [

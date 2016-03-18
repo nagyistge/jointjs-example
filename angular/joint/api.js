@@ -35,6 +35,7 @@ define([ 'joint', 'fs', 'util', 'const' ],
 				graph.fromJSON(JSON.parse(json));
 				util.showAllElementPorts(graph, paper);
 				util.paintConnections(graph, paper);
+				util.disableServiceNodes(graph, paper);
 			}
 
 			// 3

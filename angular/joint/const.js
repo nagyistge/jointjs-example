@@ -13,6 +13,6 @@ define([], function () {
         IDE_METADATA_KEY: 'ide_metadata_key',
 
         URL_GET_DEV: 'http://localhost:8888/getMetaData?key=',
-        URL_POST_DEV: 'http://localhost:8888/setMetaData',
+        URL_POST_DEV: 'http://localhost:8888/setMetaData'
     }
 });
