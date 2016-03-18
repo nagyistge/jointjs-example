@@ -203,9 +203,35 @@ define([ 'joint' ], function (joint) {
 		});
 
 		var link,
-			node = {},
 			nodes = {},
 			rootNode = null;
+
+		function addNodeToList(link, modelS, modelT) {
+			var node = nodes[ modelS.attributes.uuid ];
+			if (!node) {
+				node = {};
+				node.block_id = modelS.attributes.uuid;
+				node.ref_block_id = modelS.attributes.ref_block_id;
+				node.children = {
+					trueChild: "",
+					falseChild: ""
+				};
+
+				if (modelS.attributes.attrs.custom_attrs.isRoot) {
+					node.ref_block_id = node.block_id; // TODO ask about root ref_block_id = block_id
+				}
+			}
+
+			if (modelT) {
+				if (link.source.port === 'red') {
+					node.children.falseChild = modelT.attributes.uuid;
+				} else {
+					node.children.trueChild = modelT.attributes.uuid;
+				}
+			}
+
+			return node;
+		}
 
 		for (var i = 0; i < links.length; i++) {
 			link = links[ i ];
@@ -215,32 +241,13 @@ define([ 'joint' ], function (joint) {
 
 			var modelSource = paper.getModelById(link.source.id);
 			var modelTarget = paper.getModelById(link.target.id);
-
 			if (modelSource.attributes.attrs.custom_attrs.isRoot) {
 				rootNode = modelSource;
 			}
 
-			var viewSource = paper.findViewByModel(modelSource);
-			var viewTarget = paper.findViewByModel(modelTarget);
-
-			var portSource = viewSource.$el.find(link.source.selector);
-			// var portTarget = viewTarget.$el.find(link.target.selector);
-
-			node = nodes[ modelSource.attributes.uuid ];
-			if (!node) {
-				node = {};
-				node.block_id = modelSource.attributes.uuid;
-				node.ref_block_id = modelSource.attributes.ref_block_id;
-				node.children = {};
-			}
-
-			if (portSource[ 0 ].attributes.port === 'red') {
-				node.children.falseChild = modelTarget.attributes.uuid;
-			} else {
-				node.children.trueChild = modelTarget.attributes.uuid;
-			}
-
-			nodes[ modelSource.attributes.uuid ] = node;
+			// add parent node
+			nodes[ modelSource.attributes.uuid ] = addNodeToList(link, modelSource, modelTarget);
+			nodes[ modelTarget.attributes.uuid ] = addNodeToList(link, modelTarget);
 		}
 
 		for (var key in nodes) {
