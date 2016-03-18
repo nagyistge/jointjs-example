@@ -2,12 +2,14 @@ define(['jquery',
         'lodash',
         'jquery_ui',
         'form',
+        'util',
         'style!layout_vendor/jquery-ui-1.10.4.custom',
         'style!layout/html'],
-    function ($, _, $ui, form) {
+    function ($, _, $ui, form, util) {
 
         function initPaperEvents(joint, graph, paper) {
 
+            var V = joint.V;
             var delete_button_template = '<button class="delete">x</button>';
 
             var resizing_box_body_template = [
@@ -176,7 +178,17 @@ define(['jquery',
                 resizingStopped = false,// stopped resizing
                 lastCellView = null;    // current resize element
 
-            function editibleOn(cellView) {
+
+            function doubleClick(cellView) {
+                // handle click show/hide text
+                if (cellView.model.attributes &&
+                    cellView.model.attributes.attrs &&
+                    cellView.model.attributes.attrs.custom_attrs &&
+                    cellView.model.attributes.attrs.custom_attrs.isServiceButton)  {
+                    util.showHidePortsText(graph, paper);
+                    return;
+                }
+
                 if (!resizingAllow) return;
                 if (cellView === lastCellView) return;
                 addExtraProperties(cellView, paper);
@@ -223,7 +235,7 @@ define(['jquery',
             paper.on('cell:pointerdown', function (cellView, evt, x, y) { resizingAllow = true; });
             paper.on('cell:pointermove', function (cellView, evt, x, y) { resizingAllow = false; });
             paper.on('cell:pointerdblclick', function (cellView, evt, x, y) {
-                editibleOn(cellView);
+                doubleClick(cellView);
             });
             paper.on('blank:pointerup', function (evt, x, y) { editibleOff(evt); });
         }

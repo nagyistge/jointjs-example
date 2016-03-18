@@ -47,8 +47,42 @@ define([ 'joint' ], function (joint) {
 				continue;
 			}
 
+			if (cell.attributes.attrs.custom_attrs.isServiceButton) {
+				continue;
+			}
+
 			model = paper.getModelById(cell.id);
 			showElementPorts(paper, model);
+		}
+	}
+
+	function showHidePortsText(graph, paper) {
+		var cell,
+			model,
+			cells = graph.getCells(),
+			queryPort0 = '.devs .outPorts .port0 .port-label',
+			queryPort1 = '.devs .outPorts .port1 .port-label';
+
+		for (var i = 0; i < cells.length; i++) {
+			cell = cells[ i ];
+			if (cell.isLink()) {
+				continue;
+			}
+
+			if (cell.attributes.attrs.custom_attrs.isServiceButton) {
+				continue;
+			}
+
+			model = paper.getModelById(cell.id);
+			var view = paper.findViewByModel(model);
+
+			if (V(view.el.querySelector(queryPort0)).hasClass('hide')) {
+				V(view.el.querySelector(queryPort0)).removeClass('hide');
+				V(view.el.querySelector(queryPort1)).removeClass('hide');
+			} else {
+				V(view.el.querySelector(queryPort0)).addClass('hide');
+				V(view.el.querySelector(queryPort1)).addClass('hide');
+			}
 		}
 	}
 
@@ -61,6 +95,10 @@ define([ 'joint' ], function (joint) {
 		for (var i = 0; i < cells.length; i++) {
 			cell = cells[ i ];
 			if (cell.isLink()) {
+				continue;
+			}
+
+			if (cell.attributes.attrs.custom_attrs.isServiceButton) {
 				continue;
 			}
 
@@ -105,13 +143,13 @@ define([ 'joint' ], function (joint) {
 		V(view.$el[ 0 ].firstChild).addClass(source.port);
 	}
 
-	function showElementPorts(paper, el) {
-		if (el.isLink()) {
+	function showElementPorts(paper, model) {
+		if (model.isLink()) {
 			return;
 		}
 
-		var view = paper.findViewByModel(el);
-		if (!el.attributes.attrs.custom_attrs.isRoot) {
+		var view = paper.findViewByModel(model);
+		if (!model.attributes.attrs.custom_attrs.isRoot) {
 			V(view.el.querySelector('.devs .inPorts .port0 .port-body')).removeClass('hide');
 		}
 
@@ -278,6 +316,7 @@ define([ 'joint' ], function (joint) {
 		showElementPorts: showElementPorts,
 		linkConnected: linkConnected,
 		paintConnections: paintConnections,
-		deleteNotConnectedNodes: deleteNotConnectedNodes
+		deleteNotConnectedNodes: deleteNotConnectedNodes,
+		showHidePortsText: showHidePortsText
 	}
 });

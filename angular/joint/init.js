@@ -85,7 +85,22 @@ define([ 'joint', 'joint.shapes.devs', 'const', 'image!angular/joint/images/male
 				}
 			});
 
-			util.setId(dragGraph, root);
+			var buttonShowHidePortsText = new Shapes.Atomic({
+				position: { x: 570, y: 10 },
+				size: { width: 110, height: 30 },
+				attrs: {
+					'.label1': {
+						text: 'Show/Hide Text',
+						'font-size': 12
+					},
+					custom_attrs: {
+						isServiceButton: true
+					}
+				}
+			});
+
+			util.setId(drawGraph, root);
+			util.setId(drawGraph, buttonShowHidePortsText);
 			util.setId(dragGraph, child);
 
 			dragGraph.addCells([
@@ -93,8 +108,14 @@ define([ 'joint', 'joint.shapes.devs', 'const', 'image!angular/joint/images/male
 			]);
 
 			drawGraph.addCells([
-				root
+				root,
+				buttonShowHidePortsText
 			]);
+
+			var model = drawPaper.getModelById(buttonShowHidePortsText.attributes.id);
+			var view = drawPaper.findViewByModel(model);
+			view.options.interactive = false;
+			// view.$el.attr({rect:{style:{'pointer-events':'none'}}});
 
 			util.showElementPorts(drawPaper, root);
 			dragPaper.scale(0.7);
