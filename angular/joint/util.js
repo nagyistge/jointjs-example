@@ -1,54 +1,122 @@
 define([ 'joint' ], function (joint) {
-	function getCurrentId(graph) {
-		var elements = graph.getElements();
-		if (!graph.currentId) {
-			graph.currentId = '0';
-		}
 
-		if (elements.length > 0) {
-			var ids = elements
-				.map(function (x) {
-					return Number.parseInt(x.get('id'));
-				})
-				.sort();
-
-			graph.currentId = ids[ ids.length - 1 ];
-		}
-
-		return graph.currentId;
-	}
-
+	var V = joint.V;
+	var currentId = 0;
 
 	function setId(graph, element) {
+		var MAX_NUMBER = 100000000;
 
 		function addZero(graph) {
 			var zeroStr = "";
-			var zeroCount = graph.maxId.toString().length - graph.currentId.toString().length;
+			var zeroCount = MAX_NUMBER.toString().length - currentId.toString().length;
 			while (zeroCount > 0) {
 				zeroStr += "0";
 				zeroCount--;
 			}
 
-			graph.currentId = zeroStr + graph.currentId;
+			currentId = zeroStr + currentId;
 		}
 
-		if (graph.currentId < graph.maxId) {
-			graph.currentId++;
+		if (currentId < MAX_NUMBER) {
+			currentId++;
 		}
 		else {
-			alert('max count: ' + graph.maxId + ' is riched!')
+			console.error('max count: ' + MAX_NUMBER + ' is riched!')
 			return;
 		}
 
 		addZero(graph);
 
-		element.set('id', graph.currentId);
+		element.set('id', currentId);
 		element.set('uuid', joint.util.uuid());
-		graph.currentId = Number.parseInt(graph.currentId);
+		currentId = Number.parseInt(currentId);
 	}
 
 	function isPaperEmpty(paper) {
 		return !paper._views || Object.keys(paper._views).length <= 0;
+	}
+	
+	function showAllElementPorts(graph, paper) {
+		var cell,
+			model,
+			cells = graph.getCells();
+
+		for (var i = 0; i < cells.length; i++) {
+			cell = cells[ i ];
+			if (cell.isLink()) {
+				continue;
+			}
+
+			model = paper.getModelById(cell.id);
+			showElementPorts(paper, model);
+		}
+	}
+
+	function deleteNotConnectedNodes(graph, paper) {
+		var cell,
+			model,
+			links,
+			cells = graph.getCells();
+
+		for (var i = 0; i < cells.length; i++) {
+			cell = cells[ i ];
+			if (cell.isLink()) {
+				continue;
+			}
+
+			model = paper.getModelById(cell.id);
+			if (model.attributes.attrs.custom_attrs.isRoot) {
+				continue;
+			}
+
+			links = graph.getConnectedLinks(model);
+			if (!links || links.length === 0) {
+				model.remove();
+			}
+		}
+	}
+
+	function paintConnections(graph, paper) {
+		var cell,
+			cells = graph.getCells();
+
+		for (var i = 0; i < cells.length; i++) {
+			cell = cells[ i ];
+			if (!cell.isLink()) {
+				continue;
+			}
+
+			linkConnected(paper, cell);
+		}
+	}
+
+	function linkConnected(paper, link) {
+		var model = paper.getModelById(link.attributes.id);
+		var view = paper.findViewByModel(model);
+		var source = link.get('source');
+		if (!source || !source.port) {
+			return;
+		}
+
+		//var target = link.get('target');
+		//var modelSource = paper.getModelById(source.id);
+		//var modelTarget = paper.getModelById(target.id);
+
+		V(view.$el[ 0 ].firstChild).addClass(source.port);
+	}
+
+	function showElementPorts(paper, el) {
+		if (el.isLink()) {
+			return;
+		}
+
+		var view = paper.findViewByModel(el);
+		if (!el.attributes.attrs.custom_attrs.isRoot) {
+			V(view.el.querySelector('.devs .inPorts .port0 .port-body')).removeClass('hide');
+		}
+
+		V(view.el.querySelector('.devs .outPorts .port0 .port-body')).removeClass('hide');
+		V(view.el.querySelector('.devs .outPorts .port1 .port-body')).removeClass('hide');
 	}
 
 	function convertIdeJsonToServerJson(json, paper, returnServerJson) {
@@ -99,12 +167,13 @@ define([ 'joint' ], function (joint) {
 			var viewTarget = paper.findViewByModel(modelTarget);
 
 			var portSource = viewSource.$el.find(link.source.selector);
-			var portTarget = viewTarget.$el.find(link.target.selector);
+			// var portTarget = viewTarget.$el.find(link.target.selector);
 
 			node = nodes[ modelSource.attributes.uuid ];
 			if (!node) {
 				node = {};
 				node.block_id = modelSource.attributes.uuid;
+				node.ref_block_id = modelSource.attributes.ref_block_id;
 				node.children = {};
 			}
 
@@ -130,6 +199,7 @@ define([ 'joint' ], function (joint) {
 			if (!parsedNode) {
 				nodes[ node.uuid ] = {
 					block_id: node.uuid,
+					ref_block_id: node.ref_block_id,
 					children: {
 						trueChild: "",
 						falseChild: ""
@@ -188,8 +258,8 @@ define([ 'joint' ], function (joint) {
 			for (var i = 0; i < rootObject.constraint_graph.length; i++) {
 				node = rootObject.constraint_graph[ i ];
 				apiNode = {};
-				apiNode.element_id = joint.util.uuid();
-				apiNode.ref_block_id = node.block_id;
+				apiNode.element_id = node.block_id;
+				apiNode.ref_block_id = node.ref_block_id;
 				apiNode.children = node.children;
 				apiNodes.push(apiNode);
 			}
@@ -202,8 +272,12 @@ define([ 'joint' ], function (joint) {
 	}
 
 	return {
-		getCurrentId: getCurrentId,
 		setId: setId,
-		convertIdeJsonToServerJson: convertIdeJsonToServerJson
+		convertIdeJsonToServerJson: convertIdeJsonToServerJson,
+		showAllElementPorts: showAllElementPorts,
+		showElementPorts: showElementPorts,
+		linkConnected: linkConnected,
+		paintConnections: paintConnections,
+		deleteNotConnectedNodes: deleteNotConnectedNodes
 	}
 });

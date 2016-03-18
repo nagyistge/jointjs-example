@@ -1,7 +1,6 @@
 define([], function () {
     return {
         MODE: 'mode',
-        MODE_DEVELOPMENT: 'development',
         MODE_DEMO: 'demo',
         DATA: 'data',
         DATA_JSON: 'json',
@@ -15,7 +14,5 @@ define([], function () {
 
         URL_GET_DEV: 'http://localhost:8888/getMetaData?key=',
         URL_POST_DEV: 'http://localhost:8888/setMetaData',
-        URL_GET_DEMO: 'http://lug.pp.ciklum.com/api/getMetadata?key=',
-        URL_POST_DEMO: 'http://lug.pp.ciklum.com/api/setMetadata'
     }
 });

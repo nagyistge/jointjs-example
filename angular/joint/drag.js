@@ -4,7 +4,6 @@ define([ 'util' ], function (util) {
 			bodyJq = null,
 			bufferControl = null;
 
-		var V = joint.V;
 		var ClickableView = joint.dia.ElementView.extend({
 			pointerdown: function () {
 				this._click = true;
@@ -85,8 +84,9 @@ define([ 'util' ], function (util) {
 				evt.clientY - bbox.height / 2 - paperDrawing.$el.offset().top + document.body.scrollTop);
 
 			util.setId(graphDrawing, el);
+			el.set('ref_block_id', newElement.attributes.uuid);
 			graphDrawing.addCells([ el ]);
-			showPorts(el);
+			util.showElementPorts(paperDrawing, el);
 			clearBufferData();
 		});
 
@@ -129,16 +129,6 @@ define([ 'util' ], function (util) {
 				paperBuffer.remove();
 				graphBuffer.clear();
 			}
-		}
-
-		function showPorts(el) {
-			var view = paperDrawing.findViewByModel(el);
-			if (!view.model.attributes.attrs.custom_attrs.isRoot) {
-				V(view.el.querySelector('.devs .inPorts .port0 .port-body')).removeClass('hide');
-			}
-
-			V(view.el.querySelector('.devs .outPorts .port0 .port-body')).removeClass('hide');
-			V(view.el.querySelector('.devs .outPorts .port1 .port-body')).removeClass('hide');
 		}
 
 		return {

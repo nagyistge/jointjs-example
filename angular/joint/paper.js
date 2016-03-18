@@ -1,6 +1,7 @@
 define([ 'util' ], function (util) {
-	function initControls(joint, graph) {
+	function initControls(joint) {
 
+		var graph = new joint.dia.Graph;
 		var V = joint.V;
 		var paper = $('#paper');
 		var paper = new joint.dia.Paper({
@@ -61,7 +62,7 @@ define([ 'util' ], function (util) {
 
 		graph.on('change:source change:target', function(link) {
 			if (link.get('source').id && link.get('target').id) {
-				linkConnected(link);
+				util.linkConnected(paper, link);
 			}
 			if (link.get('source').id && !link.get('target').id) {
 				//linkDisconnected(link);
@@ -108,21 +109,6 @@ define([ 'util' ], function (util) {
 				}
 			}
 		});
-
-		function linkConnected(link) {
-			var model = paper.getModelById(link.attributes.id);
-			var view = paper.findViewByModel(model);
-			var source = link.get('source');
-			if (!source || !source.port) {
-				return;
-			}
-
-			//var target = link.get('target');
-			//var modelSource = paper.getModelById(source.id);
-			//var modelTarget = paper.getModelById(target.id);
-
-			V(view.$el[ 0 ].firstChild).addClass(source.port);
-		}
 
 		return {
 			graph: graph,
